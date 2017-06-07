@@ -1,0 +1,7 @@
+/out
+/Doxity/scripts
+/Doxity/docs
+.DS_Store
+/src/.DS_Store
+/lib/.DS_Store
+**/*.DS_Store
