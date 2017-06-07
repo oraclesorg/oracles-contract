@@ -1,0 +1,12 @@
+[submodule "lib/oracles-contract-key"]
+	path = lib/oracles-contract-key
+	url = https://github.com/oraclesorg/oracles-contract-key
+[submodule "lib/oracles-contract-validator"]
+	path = lib/oracles-contract-validator
+	url = https://github.com/oraclesorg/oracles-contract-validator
+[submodule "lib/oracles-contract-ballot"]
+	path = lib/oracles-contract-ballot
+	url = https://github.com/oraclesorg/oracles-contract-ballot
+[submodule "lib/oracles-contract-demo-data"]
+	path = lib/oracles-contract-demo-data
+	url = https://github.com/oraclesorg/oracles-contract-demo-data
