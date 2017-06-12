@@ -1,6 +1,6 @@
 pragma solidity ^0.4.11;
 
-import "oracles-demo-data/DemoData.sol";
+import "oracles-contract-demo-data/DemoData.sol";
 import "./ValidatorsManager.sol";
 
 contract BallotsManager is ValidatorsManager, DemoData {
