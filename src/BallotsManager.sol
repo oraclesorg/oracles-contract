@@ -1,9 +1,8 @@
 pragma solidity ^0.4.11;
 
-import "oracles-contract-demo-data/DemoData.sol";
 import "./ValidatorsManager.sol";
 
-contract BallotsManager is ValidatorsManager, DemoData {
+contract BallotsManager is ValidatorsManager {
     /**
     @notice Adds new Ballot
     @param ballotID Ballot unique ID
