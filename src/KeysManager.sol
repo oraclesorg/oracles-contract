@@ -69,10 +69,14 @@ contract KeysManager is owned, KeyClass, ValidatorClass, BallotClass {
     */
     function remove(address[] array, uint index) internal returns(address[] value) {
         if (index >= array.length) return;
-
-        address[] arrayNew;
-        for (uint i = index; i<array.length-1; i++){
-            arrayNew[i] = array[i+1];
+        
+        address[] memory arrayNew = new address[](array.length-1);
+        for (uint i = 0; i<arrayNew.length; i++){
+            if(i != index && i<index){
+                arrayNew[i] = array[i];
+            } else {
+                arrayNew[i] = array[i+1];
+            }
         }
         delete array;
         return arrayNew;
