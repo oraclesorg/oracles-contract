@@ -27,7 +27,7 @@ contract BallotsManager is ValidatorsManager, DemoData {
                 break;
             }
         }
-        bool disabledValidatorIsAdded = false;
+
         for (uint j = 0; j < disabledValidators.length; j++) {
             if (disabledValidators[j] == miningKey) throw; //validator is already removed before
         }
