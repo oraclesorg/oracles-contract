@@ -1,9 +1,9 @@
 pragma solidity ^0.4.11;
 
 import "./owned.sol";
-import "oracles-contract-key/KeyClass.sol";
-import "oracles-contract-validator/ValidatorClass.sol";
-import "oracles-contract-ballot/BallotClass.sol";
+import "oracles-key/KeyClass.sol";
+import "oracles-validator/ValidatorClass.sol";
+import "oracles-ballot/BallotClass.sol";
 
 contract KeysManager is owned, KeyClass, ValidatorClass, BallotClass {
     int8 internal initialKeysIssued = 0;
@@ -16,7 +16,7 @@ contract KeysManager is owned, KeyClass, ValidatorClass, BallotClass {
     @param key Initial key
     */
     function addInitialKey(address key) onlyOwner {
-        if (initialKeysIssued >= initialKeysLimit) return;
+        if (initialKeysIssued >= initialKeysLimit) throw;
         initialKeysIssued++;
         initialKeys[key] = InitialKey({isNew: true});
     }
@@ -42,24 +42,6 @@ contract KeysManager is owned, KeyClass, ValidatorClass, BallotClass {
         licensesIssued++;
         validators.push(miningAddr);
     }
-    
-    /**
-    @notice Changes mining key
-    @param miningKey Current mining key
-    @param miningKeyNew New mining key
-    */
-    function changeMiningKey(address miningKey, address miningKeyNew) {
-        if (miningKey != msg.sender) throw;
-        miningKeys[miningKey] = MiningKey({isActive: false});
-        miningKeys[miningKeyNew] = MiningKey({isActive: true});
-        validators.push(miningKeyNew);
-        for (uint jj = 0; jj < validators.length; jj++) {
-            if (validators[jj] == miningKey) {
-                validators = remove(validators, jj); 
-                return;
-            }
-        }
-    }
 
     /**
     @notice Removes element by index from array and shift elements in array
@@ -69,7 +51,7 @@ contract KeysManager is owned, KeyClass, ValidatorClass, BallotClass {
     */
     function remove(address[] array, uint index) internal returns(address[] value) {
         if (index >= array.length) return;
-        
+
         address[] memory arrayNew = new address[](array.length-1);
         for (uint i = 0; i<arrayNew.length; i++){
             if(i != index && i<index){
@@ -80,37 +62,6 @@ contract KeysManager is owned, KeyClass, ValidatorClass, BallotClass {
         }
         delete array;
         return arrayNew;
-    }
-
-    /**
-    @notice Changes voting key
-    @param votingKey Current voting key
-    @param votingKeyNew New voting key
-    */
-    function changeVotingKey(address votingKey, address votingKeyNew) {
-        if (votingKey != msg.sender) throw;
-        votingKeys[votingKey] = VotingKey({isActive: false});
-        votingKeys[votingKeyNew] = VotingKey({isActive: true});
-        for (uint ijk = 0; ijk < ballots.length; ijk++) {
-            Ballot b = ballotsMapping[ballots[ijk]];
-            if (b.owner == votingKey)
-                b.owner = votingKeyNew;
-            if (b.voted[votingKey]) {
-                delete b.voted[votingKey];
-                b.voted[votingKeyNew] = true;
-            }
-        }
-    }
-
-    /**
-    @notice Changes payout key
-    @param payoutKey Current payout key
-    @param payoutKeyNew New payout key
-    */
-    function changePayoutKey(address payoutKey, address payoutKeyNew) {
-        if (payoutKey != msg.sender) throw;
-        payoutKeys[payoutKey] = PayoutKey({isActive: false});
-        payoutKeys[payoutKeyNew] = PayoutKey({isActive: true});
     }
     
     /**
@@ -129,7 +80,7 @@ contract KeysManager is owned, KeyClass, ValidatorClass, BallotClass {
     @return { "value" : "Is payout key active or not active" }
     */
     function checkPayoutKeyValidity(address addr) constant returns (bool value) {
-        if (msg.sender != addr) throw;
+        //if (msg.sender != addr) throw;
         return payoutKeys[addr].isActive;
     }
     
@@ -139,7 +90,7 @@ contract KeysManager is owned, KeyClass, ValidatorClass, BallotClass {
     @return { "value" : "Is voting key active or not active" }
     */
     function checkVotingKeyValidity(address addr) constant returns (bool value) {
-        if (msg.sender != addr) throw;
+        //if (msg.sender != addr) throw;
         return votingKeys[addr].isActive;
     }
 }

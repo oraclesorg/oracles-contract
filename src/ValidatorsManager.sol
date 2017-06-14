@@ -1,6 +1,6 @@
 pragma solidity ^0.4.11;
 
-import "oracles-contract-validator/ValidatorClass.sol";
+import "oracles-validator/ValidatorClass.sol";
 import "./KeysManager.sol";
 
 contract ValidatorsManager is ValidatorClass, KeysManager {
@@ -39,16 +39,16 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     }
     
     /**
-    @notice Gets active notaries addresses
-    @return { "value" : "Array of active notaries addresses" }
+    @notice Gets active notaries mining keys
+    @return { "value" : "Array of active notaries mining keys" }
     */
     function getValidators() constant returns (address[] value) {
         return validators;
     }
     
     /**
-    @notice Gets disabled notaries addresses
-    @return { "value" : "Array of disabled notaries addresses" }
+    @notice Gets disabled notaries mining keys
+    @return { "value" : "Array of disabled notaries mining keys" }
     */
     function getDisabledValidators() constant returns (address[] value) {
         return disabledValidators;

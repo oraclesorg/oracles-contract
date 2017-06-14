@@ -7,5 +7,7 @@ import "./BallotsManager.sol";
 @author Oracles
 */
 contract Oracles is BallotsManager {
-
+	function Oracles() {
+		validators.push(owner);
+	}
 }
