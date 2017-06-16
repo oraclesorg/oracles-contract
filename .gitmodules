@@ -10,3 +10,6 @@
 [submodule "lib/oracles-contract-demo-data"]
 	path = lib/oracles-contract-demo-data
 	url = https://github.com/oraclesorg/oracles-contract-demo-data
+[submodule "lib/ds-test"]
+	path = lib/ds-test
+	url = https://github.com/dapphub/ds-test
