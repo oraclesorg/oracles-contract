@@ -1,9 +1,9 @@
 pragma solidity ^0.4.11;
 
 import "./owned.sol";
-import "oracles-key/KeyClass.sol";
-import "oracles-validator/ValidatorClass.sol";
-import "oracles-ballot/BallotClass.sol";
+import "oracles-contract-key/KeyClass.sol";
+import "oracles-contract-validator/ValidatorClass.sol";
+import "oracles-contract-ballot/BallotClass.sol";
 
 contract KeysManager is owned, KeyClass, ValidatorClass, BallotClass {
     int8 internal initialKeysIssued = 0;
@@ -41,27 +41,7 @@ contract KeysManager is owned, KeyClass, ValidatorClass, BallotClass {
         //add mining key to list of validators
         licensesIssued++;
         validators.push(miningAddr);
-    }
-
-    /**
-    @notice Removes element by index from array and shift elements in array
-    @param array Array to change
-    @param index Element's index to remove
-    @return { "value" : "Updated array with removed element at index" }
-    */
-    function remove(address[] array, uint index) internal returns(address[] value) {
-        if (index >= array.length) return;
-
-        address[] memory arrayNew = new address[](array.length-1);
-        for (uint i = 0; i<arrayNew.length; i++){
-            if(i != index && i<index){
-                arrayNew[i] = array[i];
-            } else {
-                arrayNew[i] = array[i+1];
-            }
-        }
-        delete array;
-        return arrayNew;
+        votingMiningKeysPair[votingAddr] = miningAddr;
     }
     
     /**

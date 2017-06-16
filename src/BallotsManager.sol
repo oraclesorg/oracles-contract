@@ -24,6 +24,7 @@ contract BallotsManager is ValidatorsManager {
     ) {
         if (!checkVotingKeyValidity(msg.sender)) throw;
         if (licensesIssued == licensesLimit && addAction) throw;
+        if (ballotsMapping[ballotID].createdAt > 0) throw;
         if (affectedKeyType == 0) {//mining key
             bool validatorIsAdded = false;
             for (uint i = 0; i < validators.length; i++) {
@@ -116,13 +117,27 @@ contract BallotsManager is ValidatorsManager {
         return ballotsMapping[ballotID].affectedKeyType;
     }
 
+    function toString(address x) internal returns (string) {
+        bytes memory b = new bytes(20);
+        for (uint i = 0; i < 20; i++)
+            b[i] = byte(uint8(uint(x) / (2**(8*(19 - i)))));
+        return string(b);
+    }
+
     /**
     @notice Gets ballot's owner full name
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's owner full name" }
     */
     function getBallotOwner(uint ballotID) constant returns (string value) {
-        return validator[ballotsMapping[ballotID].owner].fullName;
+        address ballotOwnerVotingKey = ballotsMapping[ballotID].owner;
+        address ballotOwnerMiningKey = votingMiningKeysPair[ballotOwnerVotingKey];
+        string validatorFullName = validator[ballotOwnerMiningKey].fullName;
+        bytes memory ownerName = bytes(validatorFullName);
+        if (ownerName.length == 0)
+            return toString(ballotOwnerMiningKey);
+        else
+            return validatorFullName;
     }
     
     /**
@@ -204,6 +219,21 @@ contract BallotsManager is ValidatorsManager {
         else v.result--;
         checkBallotsActivity();
     }
+
+    /**
+    @notice Removes element by index from validators array and shift elements in array
+    @param index Element's index to remove
+    @return { "value" : "Updated validators array with removed element at index" }
+    */
+    function removeValidator(uint index) internal returns(address[]) {
+        if (index >= validators.length) return;
+
+        for (uint i = index; i<validators.length-1; i++){
+            validators[i] = validators[i+1];
+        }
+        delete validators[validators.length-1];
+        validators.length--;
+    }
     
     /**
     @notice Checks ballots' activity
@@ -228,8 +258,8 @@ contract BallotsManager is ValidatorsManager {
                     } else {
                         if (b.affectedKeyType == 0) {//mining key
                             for (uint jj = 0; jj < validators.length; jj++) {
-                                if (validators[jj] == b.affectedKey && b.result > 0) {
-                                    validators = remove(validators, jj); 
+                                if (validators[jj] == b.affectedKey) {
+                                    removeValidator(jj); 
                                     return;
                                 }
                             }
