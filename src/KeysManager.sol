@@ -10,6 +10,7 @@ contract KeysManager is owned, KeyClass, ValidatorClass, BallotClass {
     int8 internal initialKeysLimit = 12;
     int8 internal licensesIssued = 0;
     int8 internal licensesLimit = 52;
+    mapping(address => address) votingMiningKeysPair;
     
     /**
     @notice Adds initial key
