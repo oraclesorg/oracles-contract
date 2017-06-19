@@ -42,6 +42,7 @@ contract KeysManager is owned, KeyClass, ValidatorClass, BallotClass {
         licensesIssued++;
         validators.push(miningAddr);
         votingMiningKeysPair[votingAddr] = miningAddr;
+        miningPayoutKeysPair[miningAddr] = payoutAddr;
     }
     
     /**

@@ -244,7 +244,7 @@ contract BallotsManager is ValidatorsManager {
             Ballot b = ballotsMapping[ballots[ijk]];
             if (b.votingDeadline < now && b.active) {
                 if ((int(b.votesAmmount) >= int(votingLowerLimit)) && b.result > 0) {
-                    if (b.addAction) {
+                    if (b.addAction) { //add key
                         if (b.affectedKeyType == 0) {//mining key
                             if (licensesIssued < licensesLimit) {
                                 licensesIssued++;
@@ -252,10 +252,12 @@ contract BallotsManager is ValidatorsManager {
                             }
                         } else if (b.affectedKeyType == 1) {//voting key
                             votingKeys[b.affectedKey] = VotingKey({isActive: true});
+                            votingMiningKeysPair[b.affectedKey] = b.miningKey;
                         } else if (b.affectedKeyType == 2) {//payout key
                             payoutKeys[b.affectedKey] = PayoutKey({isActive: true});
+                            miningPayoutKeysPair[b.miningKey] = b.affectedKey;
                         }
-                    } else {
+                    } else { //invalidate key
                         if (b.affectedKeyType == 0) {//mining key
                             for (uint jj = 0; jj < validators.length; jj++) {
                                 if (validators[jj] == b.affectedKey) {
