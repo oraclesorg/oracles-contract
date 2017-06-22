@@ -909,7 +909,7 @@ Expected result:
 					</div>
 					<h3 class="ui header" data-reactid="879" style="margin-top:-1.5rem"><code data-reactid="880">getBallots</code> <code class="signature" data-reactid="882">eb87c6dc</code></h3>
 					<h4 data-reactid="883"></h4>
-					<p data-reactid="884">Gets active ballots' ids</p>
+					<p data-reactid="884">Gets all ballots' ids</p>
 					<table class="ui definition table" data-reactid="886">
 						<tbody data-reactid="887">
 							<tr class="negative" data-reactid="888">
@@ -919,7 +919,7 @@ Expected result:
 								<td data-reactid="892"><code data-reactid="893">value</code></td>
 								<td data-reactid="894">
 									<div data-reactid="895">
-										<p data-reactid="896">Array of active ballots ids</p>
+										<p data-reactid="896">Array of all ballots ids</p>
 									</div>
 								</td>
 							</tr>
