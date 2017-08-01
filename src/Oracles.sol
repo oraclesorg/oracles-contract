@@ -1,5 +1,6 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.14;
 
+import "./Utility.sol";
 import "./BallotsManager.sol";
 
 /**
@@ -9,5 +10,6 @@ import "./BallotsManager.sol";
 contract Oracles is BallotsManager {
 	function Oracles() {
 		validators.push(owner);
+		InitiateChange(Utility.getLastBlockHash(), validators);
 	}
 }

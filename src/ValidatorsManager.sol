@@ -1,4 +1,4 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.14;
 
 import "oracles-contract-validator/ValidatorClass.sol";
 import "./KeysManager.sol";
@@ -24,8 +24,8 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
         string streetName,
         string state
     ) {
-        if (!checkVotingKeyValidity(msg.sender) && !checkInitialKey(msg.sender)) throw;
-        if (licensesIssued == licensesLimit) throw;
+        assert(!(!checkVotingKeyValidity(msg.sender) && !checkInitialKey(msg.sender)));
+        assert(licensesIssued < licensesLimit);
         validator[miningKey] = Validator({
             fullName: fullName, 
             streetName: streetName, 

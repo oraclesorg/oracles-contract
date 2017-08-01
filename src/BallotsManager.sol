@@ -1,5 +1,6 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.14;
 
+import "./Utility.sol";
 import "./ValidatorsManager.sol";
 
 contract BallotsManager is ValidatorsManager {
@@ -22,28 +23,28 @@ contract BallotsManager is ValidatorsManager {
         bool addAction,
         string memo
     ) {
-        if (!checkVotingKeyValidity(msg.sender)) throw;
-        if (licensesIssued == licensesLimit && addAction) throw;
-        if (ballotsMapping[ballotID].createdAt > 0) throw;
+        assert(checkVotingKeyValidity(msg.sender));
+        assert(!(licensesIssued == licensesLimit && addAction));
+        assert(ballotsMapping[ballotID].createdAt <= 0);
         if (affectedKeyType == 0) {//mining key
             bool validatorIsAdded = false;
             for (uint i = 0; i < validators.length; i++) {
-                if (validators[i] == affectedKey && addAction) throw; //validator is already added before
+                assert(!(validators[i] == affectedKey && addAction)); //validator is already added before
                 if (validators[i] == affectedKey) {
                     validatorIsAdded = true;
                     break;
                 }
             }
             for (uint j = 0; j < disabledValidators.length; j++) {
-                if (disabledValidators[j] == affectedKey) throw; //validator is already removed before
+                assert(disabledValidators[j] != affectedKey); //validator is already removed before
             }
-            if (!validatorIsAdded && !addAction) throw; // no such validator in validators array to remove it
+            assert(!(!validatorIsAdded && !addAction)); // no such validator in validators array to remove it
         } else if (affectedKeyType == 1) {//voting key
-            if (checkVotingKeyValidity(affectedKey) && addAction) throw; //voting key is already added before
-            if (!checkVotingKeyValidity(affectedKey) && !addAction) throw; //no such voting key to remove it
+            assert(!(checkVotingKeyValidity(affectedKey) && addAction)); //voting key is already added before
+            assert(!(!checkVotingKeyValidity(affectedKey) && !addAction)); //no such voting key to remove it
         } else if (affectedKeyType == 2) {//payout key
-            if (checkPayoutKeyValidity(affectedKey) && addAction) throw; //payout key is already added before
-            if (!checkPayoutKeyValidity(affectedKey) && !addAction) throw; //no such payout key to remove it
+            assert(!(checkPayoutKeyValidity(affectedKey) && addAction)); //payout key is already added before
+            assert(!(!checkPayoutKeyValidity(affectedKey) && !addAction)); //no such payout key to remove it
         }
         uint votingStart = now;
         ballotsMapping[ballotID] = Ballot({
@@ -132,7 +133,7 @@ contract BallotsManager is ValidatorsManager {
     function getBallotOwner(uint ballotID) constant returns (string value) {
         address ballotOwnerVotingKey = ballotsMapping[ballotID].owner;
         address ballotOwnerMiningKey = votingMiningKeysPair[ballotOwnerVotingKey];
-        string validatorFullName = validator[ballotOwnerMiningKey].fullName;
+        string storage validatorFullName = validator[ballotOwnerMiningKey].fullName;
         bytes memory ownerName = bytes(validatorFullName);
         if (ownerName.length == 0)
             return toString(ballotOwnerMiningKey);
@@ -209,10 +210,10 @@ contract BallotsManager is ValidatorsManager {
     @param accept Vote for is true, vote against is false
     */
     function vote(uint ballotID, bool accept) {
-        if (!checkVotingKeyValidity(msg.sender)) throw;
-        Ballot v =  ballotsMapping[ballotID];
-        if (v.votingDeadline < now) throw;
-        if (v.voted[msg.sender] == true) throw;
+        assert(checkVotingKeyValidity(msg.sender));
+        Ballot storage v =  ballotsMapping[ballotID];
+        assert(v.votingDeadline >= now);
+        assert(!v.voted[msg.sender]);
         v.voted[msg.sender] = true;
         v.votesAmmount++;
         if (accept) v.result++;
@@ -241,7 +242,7 @@ contract BallotsManager is ValidatorsManager {
     */
     function checkBallotsActivity() internal {
         for (uint ijk = 0; ijk < ballots.length; ijk++) {
-            Ballot b = ballotsMapping[ballots[ijk]];
+            Ballot storage b = ballotsMapping[ballots[ijk]];
             if (b.votingDeadline < now && b.active) {
                 if ((int(b.votesAmmount) >= int(votingLowerLimit)) && b.result > 0) {
                     if (b.addAction) { //add key
@@ -249,6 +250,7 @@ contract BallotsManager is ValidatorsManager {
                             if (licensesIssued < licensesLimit) {
                                 licensesIssued++;
                                 validators.push(b.affectedKey);
+                                InitiateChange(Utility.getLastBlockHash(), validators);
                             }
                         } else if (b.affectedKeyType == 1) {//voting key
                             votingKeys[b.affectedKey] = VotingKey({isActive: true});
