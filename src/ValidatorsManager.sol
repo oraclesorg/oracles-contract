@@ -18,8 +18,8 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     function addValidator(
         address miningKey,
         uint zip,
-        string licenseID,
         uint licenseExpiredAt,
+        string licenseID,
         string fullName,
         string streetName,
         string state
