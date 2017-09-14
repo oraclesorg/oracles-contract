@@ -18,11 +18,11 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     function addValidator(
         address miningKey,
         uint zip,
-        bytes32 licenseID,
+        string licenseID,
         uint licenseExpiredAt,
-        bytes32 fullName,
-        bytes32 streetName,
-        bytes32 state
+        string fullName,
+        string streetName,
+        string state
     ) {
         assert(!(!checkVotingKeyValidity(msg.sender) && !checkInitialKey(msg.sender)));
         assert(licensesIssued < licensesLimit);
@@ -59,7 +59,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     @param addr Notary's mining key
     @return { "value" : "Notary's full name" }
     */
-    function getValidatorFullName(address addr) constant returns (bytes32 value) {
+    function getValidatorFullName(address addr) constant returns (string value) {
         return validator[addr].fullName;
     }
     
@@ -68,7 +68,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     @param addr Notary's mining key
     @return { "value" : "Notary's address" }
     */
-    function getValidatorStreetName(address addr) constant returns (bytes32 value) {
+    function getValidatorStreetName(address addr) constant returns (string value) {
         return validator[addr].streetName;
     }
     
@@ -77,7 +77,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     @param addr Notary's mining key
     @return { "value" : "Notary's state full name" }
     */
-    function getValidatorState(address addr) constant returns (bytes32 value) {
+    function getValidatorState(address addr) constant returns (string value) {
         return validator[addr].state;
     }
     
@@ -95,7 +95,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     @param addr Notary's mining key
     @return { "value" : "Notary's license ID" }
     */
-    function getValidatorLicenseID(address addr) constant returns (uint value) {
+    function getValidatorLicenseID(address addr) constant returns (string value) {
         return validator[addr].licenseID;
     }
     
