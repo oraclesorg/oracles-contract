@@ -8,7 +8,7 @@ import "oracles-contract-ballot/BallotClass.sol";
 
 contract KeysManager is owned, Utility, KeyClass, ValidatorClass, BallotClass {
     int8 internal initialKeysIssued = 0;
-    int8 internal initialKeysLimit = 12;
+    int8 internal initialKeysLimit = 25;
     int8 internal licensesIssued = 0;
     int8 internal licensesLimit = 52;
     
