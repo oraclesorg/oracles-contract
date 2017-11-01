@@ -27,5 +27,3 @@ contract('Utility [all features]', function(accounts) {
     });
 
 });
-0xdf5f2a35fbea90ec4218ccf880bef3f1e9febe60c9fabc5ddf0e177273195731
-0xd2f8f61201b2b11a78d6e866abc9c3db2ae8631fa656bfe5cb53668255367afb
