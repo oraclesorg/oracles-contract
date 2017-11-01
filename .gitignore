@@ -5,3 +5,6 @@
 /src/.DS_Store
 /lib/.DS_Store
 **/*.DS_Store
+
+/node_modules/
+/build/
