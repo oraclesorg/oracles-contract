@@ -1,9 +1,11 @@
 .PHONY: symlinks
 
+DIR=$(shell pwd -P)
+
 symlinks:
-	ln -fs $(shell pwd -P)/lib/oracles-contract-validator/src $(shell pwd -P)/node_modules/oracles-contract-validator
-	ln -fs $(shell pwd -P)/lib/oracles-contract-key/src $(shell pwd -P)/node_modules/oracles-contract-key
-	ln -fs $(shell pwd -P)/lib/oracles-contract-ballot/src $(shell pwd -P)/node_modules/oracles-contract-ballot
+	if [ ! -e $(DIR)/node_modules/oracles-contract-validator ]; then ln -s $(DIR)/lib/oracles-contract-validator/src $(DIR)/node_modules/oracles-contract-validator; fi;
+	if [ ! -e $(DIR)/node_modules/oracles-contract-key ]; then ln -s $(DIR)/lib/oracles-contract-key/src $(DIR)/node_modules/oracles-contract-key; fi;
+	if [ ! -e $(DIR)/node_modules/oracles-contract-ballot ]; then ln -s $(DIR)/lib/oracles-contract-ballot/src $(DIR)/node_modules/oracles-contract-ballot; fi;
 
 merge:
 	node_modules/sol-merger/bin/sol-merger.js "src/*.sol" build
