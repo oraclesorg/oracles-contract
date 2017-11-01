@@ -7,11 +7,13 @@
     "test": "test"
   },
   "dependencies": {
-    "sol-merger": "latest",
     "chai": "latest",
     "chai-as-promised": "latest",
     "chai-bignumber": "latest",
-    "ethereumjs-testrpc": "latest"
+    "ethereumjs-testrpc": "latest",
+    "hex": "^0.1.0",
+    "sol-merger": "latest",
+    "truffle": "latest"
   },
   "devDependencies": {},
   "scripts": {
