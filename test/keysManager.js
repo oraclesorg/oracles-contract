@@ -22,6 +22,16 @@ contract('keysManager [all features]', function(accounts) {
         );
     });
 
+    it('initialKeysIssued affected by addInitialKey', async () => {
+        big(0).should.be.bignumber.equal(
+            await keysManager.getInitialKeysIssued.call()
+        );
+        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
+        big(1).should.be.bignumber.equal(
+            await keysManager.getInitialKeysIssued.call()
+        );
+    });
+
     it('method addInitialKey is restricted for non-admin', async () => {
         await keysManager.addInitialKey(accounts[1], {from: accounts[0]})
             .should.be.rejectedWith('invalid opcode');
