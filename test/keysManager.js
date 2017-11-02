@@ -101,4 +101,39 @@ contract('keysManager [all features]', function(accounts) {
         );
     });
 
+    it('createKeys modifies keysManager state', async() => {
+        let miningKey = addressFromNumber(1);
+        let payoutKey = addressFromNumber(2);
+        let votingKey = addressFromNumber(3);
+        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
+        res = await keysManager.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
+        true.should.be.equal(
+            await keysManager.miningKeys(miningKey)
+        );
+        true.should.be.equal(
+            await keysManager.payoutKeys(payoutKey)
+        );
+        true.should.be.equal(
+            await keysManager.votingKeys(votingKey)
+        );
+        miningKey.should.be.equal(
+            await keysManager.validators(0)
+        );
+    });
+
+    it('createKeys generates event', async() => {
+        let miningKey = addressFromNumber(1);
+        let payoutKey = addressFromNumber(2);
+        let votingKey = addressFromNumber(3);
+        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
+        res = await keysManager.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
+        'InitiateChange'.should.be.equal(res.logs[0].event);
+        (1).should.be.equal(
+            res.logs[0].args['_new_set'].length
+        );
+        miningKey.should.be.equal(
+            res.logs[0].args['_new_set'][0]
+        );
+    });
+
 });
