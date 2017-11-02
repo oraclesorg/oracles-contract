@@ -89,5 +89,16 @@ contract('keysManager [all features]', function(accounts) {
             .should.be.rejectedWith('invalid opcode');
     });
 
+    it('licensesIssued is incremented by createKeys', async () => {
+        big(0).should.be.bignumber.equal(
+            await keysManager.getLicensesIssued()
+        );
+        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
+        await keysManager.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]});
+        big(1).should.be.bignumber.equal(
+            await keysManager.getLicensesIssued()
+        );
+    });
+
 });
 
