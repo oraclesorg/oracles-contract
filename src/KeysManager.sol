@@ -52,8 +52,8 @@ contract KeysManager is Owned, Utility, KeyClass, ValidatorClass, BallotClass {
     @param key Initial key
     @return { "value" : "Is initial key new or not new" }
     */
-    function checkInitialKey(address key) constant returns (bool value) {
-        // Next line is disabled because it does not makes sense
+    function checkInitialKey(address key) public constant returns (bool value) {
+        // Next line is disabled because it does not make sense
         //assert(msg.sender == key);
         return initialKeys[key].isNew;
     }

@@ -49,5 +49,23 @@ contract('keysManager [all features]', function(accounts) {
         );
     });
 
+    it('checkInitialKey', async () => {
+        false.should.be.equal(
+            await keysManager.checkInitialKey.call(accounts[1])
+        );
+        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
+        true.should.be.equal(
+            await keysManager.checkInitialKey.call(accounts[1])
+        );
+    });
+
+    it('initial key is invalidated after being used in createKeys', async () => {
+        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
+        await keysManager.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]});
+        false.should.be.equal(
+            await keysManager.checkInitialKey.call(accounts[1])
+        );
+    });
+
 });
 
