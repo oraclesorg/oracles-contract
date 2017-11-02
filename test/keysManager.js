@@ -136,4 +136,32 @@ contract('keysManager [all features]', function(accounts) {
         );
     });
 
+    it('checkPayoutKeyValidity', async () => {
+        let miningKey = addressFromNumber(1);
+        let payoutKey = addressFromNumber(2);
+        let votingKey = addressFromNumber(3);
+        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
+        res = await keysManager.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
+        true.should.be.equal(
+            await keysManager.checkPayoutKeyValidity(payoutKey)
+        );
+        false.should.be.equal(
+            await keysManager.checkPayoutKeyValidity(votingKey)
+        );
+    });
+
+    it('checkVotingKeyValidity', async () => {
+        let miningKey = addressFromNumber(1);
+        let payoutKey = addressFromNumber(2);
+        let votingKey = addressFromNumber(3);
+        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
+        res = await keysManager.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
+        true.should.be.equal(
+            await keysManager.checkVotingKeyValidity(votingKey)
+        );
+        false.should.be.equal(
+            await keysManager.checkVotingKeyValidity(payoutKey)
+        );
+    });
+
 });
