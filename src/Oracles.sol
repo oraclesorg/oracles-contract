@@ -8,7 +8,7 @@ import "./BallotsManager.sol";
 @author Oracles
 */
 contract Oracles is BallotsManager {
-	function Oracles() {
+	function Oracles() public {
 		validators.push(owner);
 		InitiateChange(Utility.getLastBlockHash(), validators);
 	}

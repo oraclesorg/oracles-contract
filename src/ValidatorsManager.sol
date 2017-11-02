@@ -23,7 +23,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
         string fullName,
         string streetName,
         string state
-    ) {
+    ) public {
         assert(!(!checkVotingKeyValidity(msg.sender) && !checkInitialKey(msg.sender)));
         assert(licensesIssued < licensesLimit);
         validator[miningKey] = Validator({
@@ -42,7 +42,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     @notice Gets active notaries mining keys
     @return { "value" : "Array of active notaries mining keys" }
     */
-    function getValidators() constant returns (address[] value) {
+    function getValidators() public constant returns (address[] value) {
         return validators;
     }
     
@@ -50,7 +50,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     @notice Gets disabled notaries mining keys
     @return { "value" : "Array of disabled notaries mining keys" }
     */
-    function getDisabledValidators() constant returns (address[] value) {
+    function getDisabledValidators() public constant returns (address[] value) {
         return disabledValidators;
     }
     
@@ -59,7 +59,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     @param addr Notary's mining key
     @return { "value" : "Notary's full name" }
     */
-    function getValidatorFullName(address addr) constant returns (string value) {
+    function getValidatorFullName(address addr) public constant returns (string value) {
         return validator[addr].fullName;
     }
     
@@ -68,7 +68,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     @param addr Notary's mining key
     @return { "value" : "Notary's address" }
     */
-    function getValidatorStreetName(address addr) constant returns (string value) {
+    function getValidatorStreetName(address addr) public constant returns (string value) {
         return validator[addr].streetName;
     }
     
@@ -77,7 +77,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     @param addr Notary's mining key
     @return { "value" : "Notary's state full name" }
     */
-    function getValidatorState(address addr) constant returns (string value) {
+    function getValidatorState(address addr) public constant returns (string value) {
         return validator[addr].state;
     }
     
@@ -86,7 +86,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     @param addr Notary's mining key
     @return { "value" : "Notary's zip code" }
     */
-    function getValidatorZip(address addr) constant returns (uint value) {
+    function getValidatorZip(address addr) public constant returns (uint value) {
         return validator[addr].zip;
     }
     
@@ -95,7 +95,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     @param addr Notary's mining key
     @return { "value" : "Notary's license ID" }
     */
-    function getValidatorLicenseID(address addr) constant returns (string value) {
+    function getValidatorLicenseID(address addr) public constant returns (string value) {
         return validator[addr].licenseID;
     }
     
@@ -104,7 +104,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     @param addr Notary's mining key
     @return { "value" : "Notary's license expiration date" }
     */
-    function getValidatorLicenseExpiredAt(address addr) constant returns (uint value) {
+    function getValidatorLicenseExpiredAt(address addr) public constant returns (uint value) {
         return validator[addr].licenseExpiredAt;
     }
 
@@ -113,7 +113,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     @param addr Notary's mining key
     @return { "value" : "Notary's disabling date" }
     */
-    function getValidatorDisablingDate(address addr) constant returns (uint value) {
+    function getValidatorDisablingDate(address addr) public constant returns (uint value) {
         return validator[addr].disablingDate;
     }
 }
