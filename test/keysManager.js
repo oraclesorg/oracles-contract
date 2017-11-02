@@ -15,7 +15,7 @@ contract('keysManager [all features]', function(accounts) {
         ({systemOwner, keysManager}  = await deployTestContracts());
     });
 
-    it.only('method addInitialKey is avail for admin', async () => {
+    it('method addInitialKey is avail for admin', async () => {
         await keysManager.addInitialKey(accounts[1], {from: systemOwner});
         big(1).should.be.bignumber.equal(
             await keysManager.getInitialKeysIssued.call()
@@ -27,7 +27,7 @@ contract('keysManager [all features]', function(accounts) {
             .should.be.rejectedWith('invalid opcode');
     });
 
-    it.only('addInitialKey is allowed to add only limited number of keys', async () => {
+    it('addInitialKey is allowed to add only limited number of keys', async () => {
         let idx = 0;
         while(idx < 25) {
             let addr = sprintf('0x%040x' % idx);
