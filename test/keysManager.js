@@ -39,5 +39,15 @@ contract('keysManager [all features]', function(accounts) {
             .should.be.rejectedWith('invalid opcode');
     });
 
+    it('addInitialKey changes initialKeys structure', async () => {
+        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
+        true.should.be.equal(
+            await keysManager.initialKeys(accounts[1])
+        );
+        false.should.be.equal(
+            await keysManager.initialKeys(accounts[2])
+        );
+    });
+
 });
 
