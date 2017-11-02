@@ -1,9 +1,9 @@
 pragma solidity ^0.4.14;
 
-contract owned {
+contract Owned {
     address public owner;
 
-    function owned() public {
+    function Owned() public {
         owner = 0xDd0BB0e2a1594240fED0c2f2c17C1E9AB4F87126; //msg.sender
     }
 
