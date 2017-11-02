@@ -128,11 +128,8 @@ contract('keysManager [all features]', function(accounts) {
         await keysManager.addInitialKey(accounts[1], {from: systemOwner});
         res = await keysManager.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
         'InitiateChange'.should.be.equal(res.logs[0].event);
-        (1).should.be.equal(
-            res.logs[0].args['_new_set'].length
-        );
-        miningKey.should.be.equal(
-            res.logs[0].args['_new_set'][0]
+        [miningKey].should.be.deep.equal(
+            res.logs[0].args['_new_set']
         );
         let parentBlockHash = await web3.eth.getBlock(await web3.eth.blockNumber - 1).hash;
         parentBlockHash.should.be.equal(
