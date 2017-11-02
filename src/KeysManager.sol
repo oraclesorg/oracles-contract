@@ -16,7 +16,7 @@ contract KeysManager is Owned, Utility, KeyClass, ValidatorClass, BallotClass {
     @notice Adds initial key
     @param key Initial key
     */
-    function addInitialKey(address key) onlyOwner {
+    function addInitialKey(address key) public onlyOwner {
         assert(initialKeysIssued < initialKeysLimit);
         initialKeysIssued++;
         initialKeys[key] = InitialKey({isNew: true});
@@ -32,7 +32,7 @@ contract KeysManager is Owned, Utility, KeyClass, ValidatorClass, BallotClass {
         address miningAddr, 
         address payoutAddr, 
         address votingAddr
-    ) {
+    ) public {
         assert(checkInitialKey(msg.sender));
         //invalidate initial key
         delete initialKeys[msg.sender];
@@ -63,7 +63,7 @@ contract KeysManager is Owned, Utility, KeyClass, ValidatorClass, BallotClass {
     @param addr Payout key
     @return { "value" : "Is payout key active or not active" }
     */
-    function checkPayoutKeyValidity(address addr) constant returns (bool value) {
+    function checkPayoutKeyValidity(address addr) public constant returns (bool value) {
         return payoutKeys[addr].isActive;
     }
     
@@ -72,7 +72,7 @@ contract KeysManager is Owned, Utility, KeyClass, ValidatorClass, BallotClass {
     @param addr Voting key
     @return { "value" : "Is voting key active or not active" }
     */
-    function checkVotingKeyValidity(address addr) constant returns (bool value) {
+    function checkVotingKeyValidity(address addr) public constant returns (bool value) {
         return votingKeys[addr].isActive;
     }
 }
