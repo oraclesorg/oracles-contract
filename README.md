@@ -6,19 +6,18 @@ Ethereum Oracles smart contract to manage notaries in Oracles PoA
 |---|:-----------------------------------------------------|:--------------------------:|
 | 1 | Initial key is generated only by contract owner     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
 | 2 | Initial key generation isn't possible after it's generation limit (12) is reached     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 3 | Initial key has no authority to be a notary     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 4 | Initial key is invalidated immediately after mining/payout/voting keys are created     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 5 | Mining/payout/voting keys generation is possible only with valid initial key     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 6 | Mining/payout/voting keys can be changed by owner anytime    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 7 | Ballot management is accessed only with valid voting key    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 8 | Ballot creation isn't possible, if limit of licenses distribution (52) is reached    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 9 | Ballot creation to add notary isn't possible, if notary is already added to PoA    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 10 | Ballot creation to add/remove notary isn't possible, if notary was removed from PoA before    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 11 | Voting is accessed only with valid voting key    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 12 | Voter is able to vote for the same ballot only once   | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 13 | Voting is prohibited after ballot's expiration    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 14 | Ballot is successfully finished, if total amount of voters >= 3    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 15 | If ballot is successfully finished, removing or adding of notary is started only if amount of votes for > amount of votes against   | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 3 | Initial key is invalidated immediately after mining/payout/voting keys are created     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 4 | Mining/payout/voting keys generation is possible only with valid initial key     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 5 | Mining/payout/voting keys can be changed by owner anytime    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 6 | Ballot management is accessed only with valid voting key    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 7 | Ballot creation isn't possible, if limit of licenses distribution (52) is reached    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 8 | Ballot creation to add notary isn't possible, if notary is already added to PoA    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 9 | Ballot creation to add/remove notary isn't possible, if notary was removed from PoA before    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 10 | Voting is accessed only with valid voting key    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 11 | Voter is able to vote for the same ballot only once   | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 12 | Voting is prohibited after ballot's expiration    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 13 | Ballot is successfully finished, if total amount of voters >= 3    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 14 | If ballot is successfully finished, removing or adding of notary is started only if amount of votes for > amount of votes against   | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
 
 ## Known Ethereum contracts attack vectors checklist
 
