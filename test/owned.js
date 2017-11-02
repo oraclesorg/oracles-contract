@@ -17,13 +17,11 @@ contract('owned [all features]', function(accounts) {
     });
 
     it('method protected by onlyOwner is avail for owner', async () => {
-        true.should.be.equal(
-            await ownedContract.protectedFunc.call({from: systemOwner})
-        );
+        await ownedContract.protectedFunc({from: systemOwner});
     });
 
     it('method protected by onlyOwner is restricted for non owner', async () => {
-        await ownedContract.protectedFunc.call({from: accounts[0]})
+        await ownedContract.protectedFunc({from: accounts[0]})
             .should.be.rejectedWith('invalid opcode');
     });
 
