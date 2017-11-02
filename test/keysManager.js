@@ -134,6 +134,10 @@ contract('keysManager [all features]', function(accounts) {
         miningKey.should.be.equal(
             res.logs[0].args['_new_set'][0]
         );
+        let parentBlockHash = await web3.eth.getBlock(await web3.eth.blockNumber - 1).hash;
+        parentBlockHash.should.be.equal(
+            res.logs[0].args['_parent_hash']
+        );
     });
 
     it('checkPayoutKeyValidity', async () => {
