@@ -5,6 +5,7 @@ require('chai')
 let data = require('./data.js');
 let big = require('./util/bigNum.js').big;
 let sprintf = require('sprintf');
+let {addressFromNumber} = require('./util/ether.js');
 
 let {deployTestContracts} = require('./util/deploy.js');
 
@@ -40,11 +41,11 @@ contract('keysManager [all features]', function(accounts) {
     it('addInitialKey is allowed to add only limited number of keys', async () => {
         let idx = 0;
         while(idx < 25) {
-            let addr = sprintf('0x%040x' % idx);
+            let addr = addressFromNumber(idx);//sprintf('0x%040x' % idx);
             await keysManager.addInitialKey(addr, {from: systemOwner});
             idx++;
         }
-        let addr = sprintf('0x%040x' % idx);
+        let addr = addressFromNumber(idx);//sprintf('0x%040x' % idx);
         await keysManager.addInitialKey(addr, {from: systemOwner})
             .should.be.rejectedWith('invalid opcode');
     });
@@ -101,4 +102,3 @@ contract('keysManager [all features]', function(accounts) {
     });
 
 });
-
