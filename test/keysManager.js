@@ -67,5 +67,17 @@ contract('keysManager [all features]', function(accounts) {
         );
     });
 
+    it('createKeys fails for invalid initial key', async () => {
+        await keysManager.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]})
+            .should.be.rejectedWith('invalid opcode');
+    });
+
+    it('createKeys fails for used initial key', async () => {
+        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
+        await keysManager.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]});
+        await keysManager.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]})
+            .should.be.rejectedWith('invalid opcode');
+    });
+
 });
 
