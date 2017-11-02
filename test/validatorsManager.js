@@ -44,7 +44,7 @@ contract('validatorsManager [all features]', function(accounts) {
         );
     });
 
-    it.only('addValidator updates `.validator` mapping', async () => {
+    it('addValidator updates `.validator` mapping', async () => {
         await validatorsManager.addInitialKey(accounts[0], {from: systemOwner});
         await validatorsManager.createKeys(keys1.mining, keys1.payout, keys1.voting, {from: accounts[0]});
         await validatorsManager.addValidator(
