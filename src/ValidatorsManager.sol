@@ -29,6 +29,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
             if (votingMiningKeysPair[msg.sender] != miningKey) {
                 bytes memory newValidatorFullName = bytes(validator[miningKey].fullName);
                 assert(newValidatorFullName.length == 0);
+                assert(licensesIssued < licensesLimit);
             } else {
                 bytes memory curValidatorFullName = bytes(validator[miningKey].fullName);
                 assert(curValidatorFullName.length > 0);
@@ -37,8 +38,8 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
         if (checkInitialKey(msg.sender)) {
             bytes memory validatorFullName = bytes(validator[miningKey].fullName);
             assert(validatorFullName.length == 0);
+            assert(licensesIssued < licensesLimit);
         }
-        assert(licensesIssued < licensesLimit);
         validator[miningKey] = Validator({
             fullName: fullName, 
             streetName: streetName, 
