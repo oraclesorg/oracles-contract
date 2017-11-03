@@ -25,6 +25,15 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
         string state
     ) public {
         assert(checkVotingKeyValidity(msg.sender) || checkInitialKey(msg.sender));
+        if (checkVotingKeyValidity(msg.sender)) {
+            if (votingMiningKeysPair[msg.sender] != miningKey) {
+                bytes memory newValidatorFullName = bytes(validator[miningKey].fullName);
+                assert(newValidatorFullName.length == 0);
+            } else {
+                bytes memory curValidatorFullName = bytes(validator[miningKey].fullName);
+                assert(curValidatorFullName.length > 0);
+            }
+        }
         if (checkInitialKey(msg.sender)) {
             bytes memory validatorFullName = bytes(validator[miningKey].fullName);
             assert(validatorFullName.length == 0);
