@@ -6,6 +6,7 @@ let data = require('./data.js');
 let big = require('./util/bigNum.js').big;
 let sprintf = require('sprintf');
 let {addressFromNumber} = require('./util/ether.js');
+let util = require('util');
 
 let {deployTestContracts} = require('./util/deploy.js');
 
@@ -44,9 +45,8 @@ contract('validatorsManager [all features]', function(accounts) {
         );
     });
 
-    it('addValidator updates `.validator` mapping', async () => {
+    it('addValidator [update own data with voting key]', async () => {
         await validatorsManager.addInitialKey(accounts[0], {from: systemOwner});
-        await validatorsManager.createKeys(keys1.mining, keys1.payout, keys1.voting, {from: accounts[0]});
         await validatorsManager.addValidator(
             keys1.mining,
             data1.zip,
@@ -55,13 +55,104 @@ contract('validatorsManager [all features]', function(accounts) {
             data1.fullName,
             data1.streetName,
             data1.state,
+            {from: accounts[0]}
+        );
+        await validatorsManager.createKeys(keys1.mining, keys1.payout, keys1.voting, {from: accounts[0]});
+        await validatorsManager.addValidator(
+            keys1.mining,
+            data1.zip,
+            data1.licenseExpiredAt,
+            data1.licenseID,
+            data1.fullName,
+            'NEW STREET',
+            data1.state,
             {from: keys1.voting}
+        );
+        [
+            data1.fullName, 'NEW STREET', data1.state, big(data1.zip),
+            data1.licenseID, big(data1.licenseExpiredAt), big(0), ""
+        ].should.be.deep.equal(
+            await validatorsManager.validator(keys1.mining)
+        );
+
+    });
+
+    it('addValidator [add data with initial key]', async () => {
+        await validatorsManager.addInitialKey(accounts[0], {from: systemOwner});
+        "".should.be.equal(
+            (await validatorsManager.validator(keys1.mining))[0]
+        );
+        await validatorsManager.addValidator(
+            keys1.mining,
+            data1.zip,
+            data1.licenseExpiredAt,
+            data1.licenseID,
+            data1.fullName,
+            data1.streetName,
+            data1.state,
+            {from: accounts[0]}
         );
         [
             data1.fullName, data1.streetName, data1.state, big(data1.zip),
             data1.licenseID, big(data1.licenseExpiredAt), big(0), ""
         ].should.be.deep.equal(
             await validatorsManager.validator(keys1.mining)
+        );
+    });
+
+    it.only('addValidator [fails to rewrite existing data with initial key]', async () => {
+        await validatorsManager.addInitialKey(accounts[0], {from: systemOwner});
+        await validatorsManager.addValidator(
+            keys1.mining,
+            data1.zip,
+            data1.licenseExpiredAt,
+            data1.licenseID,
+            data1.fullName,
+            data1.streetName,
+            data1.state,
+            {from: accounts[0]}
+        );
+        await validatorsManager.addInitialKey(accounts[4], {from: systemOwner});
+        await validatorsManager.addValidator(
+                keys1.mining,
+                data1.zip,
+                data1.licenseExpiredAt,
+                data1.licenseID,
+                data1.fullName,
+                data1.streetName,
+                data1.state,
+                {from: accounts[4]}
+            ).should.be.rejectedWith('invalid opcode');
+    });
+
+    it('addValidator [add new data with voting key]', async () => {
+        await validatorsManager.addInitialKey(accounts[0], {from: systemOwner});
+        await validatorsManager.addValidator(
+            keys1.mining,
+            data1.zip,
+            data1.licenseExpiredAt,
+            data1.licenseID,
+            data1.fullName,
+            data1.streetName,
+            data1.state,
+            {from: accounts[0]}
+        );
+        await validatorsManager.createKeys(keys1.mining, keys1.payout, keys1.voting, {from: accounts[0]});
+        await validatorsManager.addValidator(
+            keys2.mining,
+            data2.zip,
+            data2.licenseExpiredAt,
+            data2.licenseID,
+            data2.fullName,
+            data2.streetName,
+            data2.state,
+            {from: keys1.voting}
+        );
+        [
+            data2.fullName, data2.streetName, data2.state, big(data2.zip),
+            data2.licenseID, big(data2.licenseExpiredAt), big(0), ""
+        ].should.be.deep.equal(
+            await validatorsManager.validator(keys2.mining)
         );
 
     });
