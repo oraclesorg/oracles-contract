@@ -19,6 +19,8 @@ contract KeysManager is Owned, Utility, KeyClass, ValidatorClass, BallotClass {
     */
     function addInitialKey(address key) public onlyOwner {
         assert(initialKeysIssued < initialKeysLimit);
+        // Check that key has not been added already
+        assert(!initialKeys[key].isNew);
         initialKeysIssued++;
         initialKeys[key] = InitialKey({isNew: true});
     }

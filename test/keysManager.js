@@ -165,4 +165,10 @@ contract('keysManager [all features]', function(accounts) {
         );
     });
 
+    it('addInitialKey fails to add same key twice', async () => {
+        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
+        await keysManager.addInitialKey(accounts[1], {from: systemOwner})
+            .should.be.rejectedWith('invalid opcode');
+    });
+
 });
