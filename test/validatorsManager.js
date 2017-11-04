@@ -30,6 +30,14 @@ contract('validatorsManager [all features]', function(accounts) {
         streetName: 'Elm Street',
         state: 'Ohio',
     };
+    let data2 = {
+        zip: big(123456),
+        licenseExpiredAt: big(1893456111), // 2030 year + 111 seconds
+        licenseID: 'license-2',
+        fullName: 'Oleg Olegov',
+        streetName: 'Snow Street',
+        state: 'Alaska',
+    };
 
     beforeEach(async () => {
         ({systemOwner, validatorsManager}  = await deployTestContracts());
@@ -100,7 +108,7 @@ contract('validatorsManager [all features]', function(accounts) {
         );
     });
 
-    it.only('addValidator [fails to rewrite existing data with initial key]', async () => {
+    it('addValidator [fails to rewrite existing data with initial key]', async () => {
         await validatorsManager.addInitialKey(accounts[0], {from: systemOwner});
         await validatorsManager.addValidator(
             keys1.mining,
@@ -157,7 +165,7 @@ contract('validatorsManager [all features]', function(accounts) {
 
     });
 
-    it.only('getValidator* methods', async () => {
+    it('getValidator* methods', async () => {
         await validatorsManager.addInitialKey(accounts[0], {from: systemOwner});
         await validatorsManager.addValidator(
             keys1.mining,
