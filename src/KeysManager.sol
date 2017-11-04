@@ -6,6 +6,7 @@ import "oracles-contract-key/KeyClass.sol";
 import "oracles-contract-validator/ValidatorClass.sol";
 import "oracles-contract-ballot/BallotClass.sol";
 
+
 contract KeysManager is Owned, Utility, KeyClass, ValidatorClass, BallotClass {
     int8 internal initialKeysIssued = 0;
     int8 internal initialKeysLimit = 25;

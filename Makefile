@@ -22,3 +22,6 @@ testrpc:
 
 test:
 	truffle test
+
+solhint:
+	solhint contracts/KeysManager.sol
