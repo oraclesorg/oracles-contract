@@ -24,4 +24,4 @@ test:
 	truffle test
 
 solhint:
-	solhint contracts/KeysManager.sol
+	solhint contracts/*.sol contracts/util/*.sol
