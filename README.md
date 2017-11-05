@@ -50,6 +50,15 @@ Expected result:
 `./out/Oracles.abi` - binary interface of Oracles contract
 
 
+## How to run tests
+
+* First you need to create symlinks so solidity compiler be able to import contracts from
+    oraceles-contract-key, oracles-contract-validator and oracles-contract-ballot directories.
+    Just run `make symlinks` command or do it manually (see details in Makefile)
+* Then run testrpc with specifica accounts and balances. Use `make testrpc` command.
+* Now you can run tests with command `truffle test`.
+
+
 ## Oracles contract definition
 <div id="react-mount">
 	<div class="wide wide wide column twelve twelve computer mobile sixteen stretched tablet" data-reactid="22">
