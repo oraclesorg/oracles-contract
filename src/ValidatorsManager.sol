@@ -16,7 +16,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     @param streetName Notary's address
     @param state Notary's US state full name
     */
-    function insertNewValidatorFromCeremony(
+    function insertValidatorFromCeremony(
         address miningKey,
         uint zip,
         uint licenseExpiredAt,
@@ -42,7 +42,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     @param streetName Notary's address
     @param state Notary's US state full name
     */
-    function upsertNewValidatorFromGovernance(
+    function upsertValidatorFromGovernance(
         address miningKey,
         uint zip,
         uint licenseExpiredAt,
