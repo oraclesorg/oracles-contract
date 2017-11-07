@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;// solhint-disable-line compiler-fixed, compiler-gt-0_4
+pragma solidity 0.4.18;
 
 import "oracles-contract-validator/ValidatorClass.sol";
 import "./KeysManager.sol";
@@ -28,17 +28,14 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
         assert(checkVotingKeyValidity(msg.sender) || checkInitialKey(msg.sender));
         if (checkVotingKeyValidity(msg.sender)) {
             if (votingMiningKeysPair[msg.sender] != miningKey) {
-                bytes memory newValidatorFullName = bytes(validator[miningKey].fullName);
-                assert(newValidatorFullName.length == 0);
+                assert(!isMiningKeyDataExists(miningKey));
                 assert(licensesIssued < licensesLimit);
             } else {
-                bytes memory curValidatorFullName = bytes(validator[miningKey].fullName);
-                assert(curValidatorFullName.length > 0);
+                assert(isMiningKeyDataExists(miningKey));
             }
         }
         if (checkInitialKey(msg.sender)) {
-            bytes memory validatorFullName = bytes(validator[miningKey].fullName);
-            assert(validatorFullName.length == 0);
+            assert(!isMiningKeyDataExists(miningKey));
             assert(licensesIssued < licensesLimit);
         }
         validator[miningKey] = Validator({
@@ -130,5 +127,10 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     */
     function getValidatorDisablingDate(address addr) public constant returns (uint value) {
         return validator[addr].disablingDate;
+    }
+
+    function isMiningKeyDataExists(address miningKey) internal returns (bool) {
+        bytes memory name = bytes(validator[miningKey].fullName);
+        return name.length > 0;
     }
 }
