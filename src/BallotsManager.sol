@@ -218,6 +218,18 @@ contract BallotsManager is ValidatorsManager {
         checkBallotsActivity();
     }
 
+    /**
+    @notice Finalizes ballot
+    @dev Finalizes ballot
+    */
+    function finalizeBallot(uint ballotID) public {
+        assert(checkVotingKeyValidity(msg.sender));
+        Ballot storage b = ballotsMapping[ballotID];
+        if (!finalizeBallotInternal(b)) {
+            checkBallotsActivity();
+        }
+    }
+
     function toString(address x) internal pure returns (string) {
         bytes memory b = new bytes(20);
         for (uint i = 0; i < 20; i++)
@@ -239,6 +251,22 @@ contract BallotsManager is ValidatorsManager {
         delete validators[validators.length-1];
         validators.length--;
     }
+
+    function finalizeBallotInternal(Ballot b) internal returns(bool finalized) {
+        if (b.votingDeadline < now && b.active) {
+            if ((int(b.votesAmmount) >= int(votingLowerLimit)) && b.result > 0) {
+                if (b.addAction) { //add key
+                    checkBallotsActivityPostActionAdd(b);
+                } else { //invalidate key
+                    checkBallotsActivityPostActionRemove(b);
+                }
+            }
+            b.active = false;
+            return true;
+        } else {
+            return false;
+        }
+    }
     
     /**
     @notice Checks ballots' activity
@@ -249,16 +277,7 @@ contract BallotsManager is ValidatorsManager {
     function checkBallotsActivity() internal {
         for (uint ijk = 0; ijk < ballots.length; ijk++) {
             Ballot storage b = ballotsMapping[ballots[ijk]];
-            if (b.votingDeadline < now && b.active) {
-                if ((int(b.votesAmmount) >= int(votingLowerLimit)) && b.result > 0) {
-                    if (b.addAction) { //add key
-                        checkBallotsActivityPostActionAdd(b);
-                    } else { //invalidate key
-                        checkBallotsActivityPostActionRemove(b);
-                    }
-                }
-                b.active = false;
-            }
+            finalizeBallotInternal(b);
         }
     }
 
