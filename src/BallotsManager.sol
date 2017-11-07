@@ -1,7 +1,8 @@
-pragma solidity ^0.4.14;
+pragma solidity ^0.4.18;// solhint-disable-line compiler-fixed, compiler-gt-0_4
 
 import "./Utility.sol";
 import "./ValidatorsManager.sol";
+
 
 contract BallotsManager is ValidatorsManager {
     /**
@@ -22,7 +23,7 @@ contract BallotsManager is ValidatorsManager {
         uint affectedKeyType,
         bool addAction,
         string memo
-    ) {
+    ) public {
         assert(checkVotingKeyValidity(msg.sender));
         assert(!(licensesIssued == licensesLimit && addAction));
         assert(ballotsMapping[ballotID].createdAt <= 0);
@@ -69,7 +70,7 @@ contract BallotsManager is ValidatorsManager {
     @notice Gets active ballots' ids
     @return { "value" : "Array of active ballots ids" }
     */
-    function getBallots() constant returns (uint[] value) {
+    function getBallots() public constant returns (uint[] value) {
         return ballots;
     }
     
@@ -78,7 +79,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's memo" }
     */
-    function getBallotMemo(uint ballotID) constant returns (string value) {
+    function getBallotMemo(uint ballotID) public constant returns (string value) {
         return ballotsMapping[ballotID].memo;
     }
     
@@ -87,7 +88,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's action: adding is true, removing is false" }
     */
-    function getBallotAction(uint ballotID) constant returns (bool value) {
+    function getBallotAction(uint ballotID) public constant returns (bool value) {
         return ballotsMapping[ballotID].addAction;
     }
     
@@ -96,7 +97,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Notary's mining key" }
     */
-    function getBallotMiningKey(uint ballotID) constant returns (address value) {
+    function getBallotMiningKey(uint ballotID) public constant returns (address value) {
         return ballotsMapping[ballotID].miningKey;
     }
 
@@ -105,7 +106,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's affected key" }
     */
-    function getBallotAffectedKey(uint ballotID) constant returns (address value) {
+    function getBallotAffectedKey(uint ballotID) public constant returns (address value) {
         return ballotsMapping[ballotID].affectedKey;
     }
 
@@ -114,15 +115,8 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's affected key type" }
     */
-    function getBallotAffectedKeyType(uint ballotID) constant returns (uint value) {
+    function getBallotAffectedKeyType(uint ballotID) public constant returns (uint value) {
         return ballotsMapping[ballotID].affectedKeyType;
-    }
-
-    function toString(address x) internal returns (string) {
-        bytes memory b = new bytes(20);
-        for (uint i = 0; i < 20; i++)
-            b[i] = byte(uint8(uint(x) / (2**(8*(19 - i)))));
-        return string(b);
     }
 
     /**
@@ -130,7 +124,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's owner full name" }
     */
-    function getBallotOwner(uint ballotID) constant returns (string value) {
+    function getBallotOwner(uint ballotID) public constant returns (string value) {
         address ballotOwnerVotingKey = ballotsMapping[ballotID].owner;
         address ballotOwnerMiningKey = votingMiningKeysPair[ballotOwnerVotingKey];
         string storage validatorFullName = validator[ballotOwnerMiningKey].fullName;
@@ -146,7 +140,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's creation time" }
     */
-    function ballotCreatedAt(uint ballotID) constant returns (uint value) {
+    function ballotCreatedAt(uint ballotID) public constant returns (uint value) {
         return ballotsMapping[ballotID].createdAt;
     }
     
@@ -155,7 +149,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's voting start date" }
     */
-    function getBallotVotingStart(uint ballotID) constant returns (uint value) {
+    function getBallotVotingStart(uint ballotID) public constant returns (uint value) {
         return ballotsMapping[ballotID].votingStart;
     }
     
@@ -164,7 +158,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's voting end date" }
     */
-    function getBallotVotingEnd(uint ballotID) constant returns (uint value) {
+    function getBallotVotingEnd(uint ballotID) public constant returns (uint value) {
         return ballotsMapping[ballotID].votingDeadline;
     }
     
@@ -173,7 +167,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's amount of votes for" }
     */
-    function getVotesFor(uint ballotID) constant returns (int value) {
+    function getVotesFor(uint ballotID) public constant returns (int value) {
         return (ballotsMapping[ballotID].votesAmmount + ballotsMapping[ballotID].result)/2;
     }
     
@@ -182,7 +176,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's amount of votes against" }
     */
-    function getVotesAgainst(uint ballotID) constant returns (int value) {
+    function getVotesAgainst(uint ballotID) public constant returns (int value) {
         return (ballotsMapping[ballotID].votesAmmount - ballotsMapping[ballotID].result)/2;
     }
     
@@ -191,7 +185,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's activity: active or not" }
     */
-    function ballotIsActive(uint ballotID) constant returns (bool value) {
+    function ballotIsActive(uint ballotID) public constant returns (bool value) {
         return ballotsMapping[ballotID].active;
     }
 
@@ -200,7 +194,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot is already voted by signer of current transaction: yes or no" }
     */
-    function ballotIsVoted(uint ballotID) constant returns (bool value) {
+    function ballotIsVoted(uint ballotID) public constant returns (bool value) {
         return ballotsMapping[ballotID].voted[msg.sender];
     }
     
@@ -209,16 +203,26 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @param accept Vote for is true, vote against is false
     */
-    function vote(uint ballotID, bool accept) {
+    function vote(uint ballotID, bool accept) public {
         assert(checkVotingKeyValidity(msg.sender));
         Ballot storage v =  ballotsMapping[ballotID];
         assert(v.votingDeadline >= now);
         assert(!v.voted[msg.sender]);
         v.voted[msg.sender] = true;
         v.votesAmmount++;
-        if (accept) v.result++;
-        else v.result--;
+        if (accept) {
+            v.result++;
+        } else {
+            v.result--;
+        }
         checkBallotsActivity();
+    }
+
+    function toString(address x) internal pure returns (string) {
+        bytes memory b = new bytes(20);
+        for (uint i = 0; i < 20; i++)
+            b[i] = byte(uint8(uint(x) / (2**(8*(19 - i)))));
+        return string(b);
     }
 
     /**
@@ -229,7 +233,7 @@ contract BallotsManager is ValidatorsManager {
     function removeValidator(uint index) internal returns(address[]) {
         if (index >= validators.length) return;
 
-        for (uint i = index; i<validators.length-1; i++){
+        for (uint i = index; i < validators.length-1; i++) {
             validators[i] = validators[i+1];
         }
         delete validators[validators.length-1];
@@ -238,7 +242,9 @@ contract BallotsManager is ValidatorsManager {
     
     /**
     @notice Checks ballots' activity
-    @dev Deactivate ballots, if ballot's time is finished and implement action: add or remove notary, if votes for are greater votes against, and total votes are greater than 3
+    @dev Deactivate ballots, if ballot's time is finished and 
+    implement action: add or remove notary, if votes for are 
+    greater votes against, and total votes are greater than 3
     */
     function checkBallotsActivity() internal {
         for (uint ijk = 0; ijk < ballots.length; ijk++) {
@@ -246,38 +252,46 @@ contract BallotsManager is ValidatorsManager {
             if (b.votingDeadline < now && b.active) {
                 if ((int(b.votesAmmount) >= int(votingLowerLimit)) && b.result > 0) {
                     if (b.addAction) { //add key
-                        if (b.affectedKeyType == 0) {//mining key
-                            if (licensesIssued < licensesLimit) {
-                                licensesIssued++;
-                                validators.push(b.affectedKey);
-                                InitiateChange(Utility.getLastBlockHash(), validators);
-                            }
-                        } else if (b.affectedKeyType == 1) {//voting key
-                            votingKeys[b.affectedKey] = VotingKey({isActive: true});
-                            votingMiningKeysPair[b.affectedKey] = b.miningKey;
-                        } else if (b.affectedKeyType == 2) {//payout key
-                            payoutKeys[b.affectedKey] = PayoutKey({isActive: true});
-                            miningPayoutKeysPair[b.miningKey] = b.affectedKey;
-                        }
+                        checkBallotsActivityPostActionAdd(b);
                     } else { //invalidate key
-                        if (b.affectedKeyType == 0) {//mining key
-                            for (uint jj = 0; jj < validators.length; jj++) {
-                                if (validators[jj] == b.affectedKey) {
-                                    removeValidator(jj); 
-                                    return;
-                                }
-                            }
-                            disabledValidators.push(b.affectedKey);
-                            validator[b.affectedKey].disablingDate = now;
-                        } else if (b.affectedKeyType == 1) {//voting key
-                            votingKeys[b.affectedKey] = VotingKey({isActive: false});
-                        } else if (b.affectedKeyType == 2) {//payout key
-                            payoutKeys[b.affectedKey] = PayoutKey({isActive: false});
-                        }
+                        checkBallotsActivityPostActionRemove(b);
                     }
                 }
                 b.active = false;
             }
+        }
+    }
+
+    function checkBallotsActivityPostActionAdd(Ballot b) internal {
+        if (b.affectedKeyType == 0) {//mining key
+            if (licensesIssued < licensesLimit) {
+                licensesIssued++;
+                validators.push(b.affectedKey);
+                InitiateChange(Utility.getLastBlockHash(), validators);
+            }
+        } else if (b.affectedKeyType == 1) {//voting key
+            votingKeys[b.affectedKey] = VotingKey({isActive: true});
+            votingMiningKeysPair[b.affectedKey] = b.miningKey;
+        } else if (b.affectedKeyType == 2) {//payout key
+            payoutKeys[b.affectedKey] = PayoutKey({isActive: true});
+            miningPayoutKeysPair[b.miningKey] = b.affectedKey;
+        }
+    }
+
+    function checkBallotsActivityPostActionRemove(Ballot b) internal {
+        if (b.affectedKeyType == 0) {//mining key
+            for (uint jj = 0; jj < validators.length; jj++) {
+                if (validators[jj] == b.affectedKey) {
+                    removeValidator(jj); 
+                    return;
+                }
+            }
+            disabledValidators.push(b.affectedKey);
+            validator[b.affectedKey].disablingDate = now;
+        } else if (b.affectedKeyType == 1) {//voting key
+            votingKeys[b.affectedKey] = VotingKey({isActive: false});
+        } else if (b.affectedKeyType == 2) {//payout key
+            payoutKeys[b.affectedKey] = PayoutKey({isActive: false});
         }
     }
 }

@@ -1,9 +1,10 @@
-pragma solidity ^0.4.14;
+pragma solidity ^0.4.18;// solhint-disable-line compiler-fixed, compiler-gt-0_4
+
 
 contract Utility {
-	function getLastBlockHash() returns (bytes32 _blockHash) {
-	    uint256 lastBlockNumber = block.number - 1;
-	    bytes32 lastBlockHash = bytes32(block.blockhash(lastBlockNumber));
-	    return lastBlockHash;
-	}
+    function getLastBlockHash() public view returns (bytes32) {
+        uint256 lastBlockNumber = block.number - 1;
+        bytes32 lastBlockHash = block.blockhash(lastBlockNumber);
+        return lastBlockHash;
+    }
 }

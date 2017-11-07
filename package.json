@@ -1,0 +1,25 @@
+{
+  "name": "oracles-contract",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "chai": "latest",
+    "chai-as-promised": "latest",
+    "chai-bignumber": "latest",
+    "ethereumjs-testrpc": "latest",
+    "hex": "^0.1.0",
+    "sol-merger": "latest",
+    "sprintf": "^0.1.5",
+    "truffle": "latest"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT"
+}

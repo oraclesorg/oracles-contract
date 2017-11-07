@@ -1,12 +1,13 @@
-pragma solidity ^0.4.14;
+pragma solidity ^0.4.18;// solhint-disable-line compiler-fixed, compiler-gt-0_4
 
-import "./owned.sol";
+import "./Owned.sol";
 import "./Utility.sol";
 import "oracles-contract-key/KeyClass.sol";
 import "oracles-contract-validator/ValidatorClass.sol";
 import "oracles-contract-ballot/BallotClass.sol";
 
-contract KeysManager is owned, Utility, KeyClass, ValidatorClass, BallotClass {
+
+contract KeysManager is Owned, Utility, KeyClass, ValidatorClass, BallotClass {
     int8 internal initialKeysIssued = 0;
     int8 internal initialKeysLimit = 25;
     int8 internal licensesIssued = 0;
@@ -16,8 +17,10 @@ contract KeysManager is owned, Utility, KeyClass, ValidatorClass, BallotClass {
     @notice Adds initial key
     @param key Initial key
     */
-    function addInitialKey(address key) onlyOwner {
+    function addInitialKey(address key) public onlyOwner {
         assert(initialKeysIssued < initialKeysLimit);
+        // Check that key has not been added already
+        assert(!initialKeys[key].isNew);
         initialKeysIssued++;
         initialKeys[key] = InitialKey({isNew: true});
     }
@@ -32,7 +35,7 @@ contract KeysManager is owned, Utility, KeyClass, ValidatorClass, BallotClass {
         address miningAddr, 
         address payoutAddr, 
         address votingAddr
-    ) {
+    ) public {
         assert(checkInitialKey(msg.sender));
         //invalidate initial key
         delete initialKeys[msg.sender];
@@ -52,8 +55,9 @@ contract KeysManager is owned, Utility, KeyClass, ValidatorClass, BallotClass {
     @param key Initial key
     @return { "value" : "Is initial key new or not new" }
     */
-    function checkInitialKey(address key) constant returns (bool value) {
-        assert(msg.sender == key);
+    function checkInitialKey(address key) public constant returns (bool value) {
+        // Next line is disabled because it does not make sense
+        //assert(msg.sender == key);
         return initialKeys[key].isNew;
     }
     
@@ -62,7 +66,7 @@ contract KeysManager is owned, Utility, KeyClass, ValidatorClass, BallotClass {
     @param addr Payout key
     @return { "value" : "Is payout key active or not active" }
     */
-    function checkPayoutKeyValidity(address addr) constant returns (bool value) {
+    function checkPayoutKeyValidity(address addr) public constant returns (bool value) {
         return payoutKeys[addr].isActive;
     }
     
@@ -71,7 +75,7 @@ contract KeysManager is owned, Utility, KeyClass, ValidatorClass, BallotClass {
     @param addr Voting key
     @return { "value" : "Is voting key active or not active" }
     */
-    function checkVotingKeyValidity(address addr) constant returns (bool value) {
+    function checkVotingKeyValidity(address addr) public constant returns (bool value) {
         return votingKeys[addr].isActive;
     }
 }
