@@ -53,9 +53,9 @@ contract('validatorsManager [all features]', function(accounts) {
         );
     });
 
-    it('addValidator [update own data with voting key]', async () => {
+    it('insertNewValidatorFromCeremony [update own data with voting key]', async () => {
         await validatorsManager.addInitialKey(accounts[0], {from: systemOwner});
-        await validatorsManager.addValidator(
+        await validatorsManager.insertNewValidatorFromCeremony(
             keys1.mining,
             data1.zip,
             data1.licenseExpiredAt,
@@ -66,7 +66,7 @@ contract('validatorsManager [all features]', function(accounts) {
             {from: accounts[0]}
         );
         await validatorsManager.createKeys(keys1.mining, keys1.payout, keys1.voting, {from: accounts[0]});
-        await validatorsManager.addValidator(
+        await validatorsManager.upsertNewValidatorFromGovernance(
             keys1.mining,
             data1.zip,
             data1.licenseExpiredAt,
@@ -85,12 +85,12 @@ contract('validatorsManager [all features]', function(accounts) {
 
     });
 
-    it('addValidator [add data with initial key]', async () => {
+    it('insertNewValidatorFromCeremony [add data with initial key]', async () => {
         await validatorsManager.addInitialKey(accounts[0], {from: systemOwner});
         "".should.be.equal(
             (await validatorsManager.validator(keys1.mining))[0]
         );
-        await validatorsManager.addValidator(
+        await validatorsManager.insertNewValidatorFromCeremony(
             keys1.mining,
             data1.zip,
             data1.licenseExpiredAt,
@@ -108,9 +108,9 @@ contract('validatorsManager [all features]', function(accounts) {
         );
     });
 
-    it('addValidator [fails to rewrite existing data with initial key]', async () => {
+    it('insertNewValidatorFromCeremony [fails to rewrite existing data with initial key]', async () => {
         await validatorsManager.addInitialKey(accounts[0], {from: systemOwner});
-        await validatorsManager.addValidator(
+        await validatorsManager.insertNewValidatorFromCeremony(
             keys1.mining,
             data1.zip,
             data1.licenseExpiredAt,
@@ -121,7 +121,7 @@ contract('validatorsManager [all features]', function(accounts) {
             {from: accounts[0]}
         );
         await validatorsManager.addInitialKey(accounts[4], {from: systemOwner});
-        await validatorsManager.addValidator(
+        await validatorsManager.insertNewValidatorFromCeremony(
                 keys1.mining,
                 data1.zip,
                 data1.licenseExpiredAt,
@@ -133,9 +133,9 @@ contract('validatorsManager [all features]', function(accounts) {
             ).should.be.rejectedWith('invalid opcode');
     });
 
-    it('addValidator [add new data with voting key]', async () => {
+    it('insertNewValidatorFromCeremony [add new data with voting key]', async () => {
         await validatorsManager.addInitialKey(accounts[0], {from: systemOwner});
-        await validatorsManager.addValidator(
+        await validatorsManager.insertNewValidatorFromCeremony(
             keys1.mining,
             data1.zip,
             data1.licenseExpiredAt,
@@ -146,7 +146,7 @@ contract('validatorsManager [all features]', function(accounts) {
             {from: accounts[0]}
         );
         await validatorsManager.createKeys(keys1.mining, keys1.payout, keys1.voting, {from: accounts[0]});
-        await validatorsManager.addValidator(
+        await validatorsManager.upsertNewValidatorFromGovernance(
             keys2.mining,
             data2.zip,
             data2.licenseExpiredAt,
@@ -167,7 +167,7 @@ contract('validatorsManager [all features]', function(accounts) {
 
     it('getValidator* methods', async () => {
         await validatorsManager.addInitialKey(accounts[0], {from: systemOwner});
-        await validatorsManager.addValidator(
+        await validatorsManager.insertNewValidatorFromCeremony(
             keys1.mining,
             data1.zip,
             data1.licenseExpiredAt,
