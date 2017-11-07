@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;// solhint-disable-line compiler-fixed, compiler-gt-0_4
+pragma solidity 0.4.18;
 
 
 contract Owned {
