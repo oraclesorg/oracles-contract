@@ -175,9 +175,92 @@ Expected result:
 					<div class="ui right label ribbon" data-reactid="146">
 						function
 					</div>
-					<h3 class="ui header" data-reactid="148" style="margin-top:-1.5rem"><code data-reactid="149">addValidator</code> <code class="signature" data-reactid="151">0aeee835</code></h3>
+					<h3 class="ui header" data-reactid="148" style="margin-top:-1.5rem"><code data-reactid="149">insertValidatorFromCeremony</code> <code class="signature" data-reactid="151">0aeee835</code></h3>
 					<h4 data-reactid="152"></h4>
-					<p data-reactid="153">Adds new notary</p>
+					<p data-reactid="153">Adds new notary's personal info. It is from Ceremony dApp</p>
+					<table class="ui definition table" data-reactid="155">
+						<tbody data-reactid="156">
+							<tr class="positive" data-reactid="157">
+								<td data-reactid="158" rowspan="7" style="text-transform:capitalize">inputs</td>
+								<td data-reactid="159">0</td>
+								<td data-reactid="160">address</td>
+								<td data-reactid="161"><code data-reactid="162">miningKey</code></td>
+								<td data-reactid="163">
+									<div data-reactid="164">
+										<p data-reactid="165">Notary's mining key</p>
+									</div>
+								</td>
+							</tr>
+							<tr class="positive" data-reactid="167">
+								<td data-reactid="169">1</td>
+								<td data-reactid="170">uint256</td>
+								<td data-reactid="171"><code data-reactid="172">zip</code></td>
+								<td data-reactid="173">
+									<div data-reactid="174">
+										<p data-reactid="175">Notary's zip code</p>
+									</div>
+								</td>
+							</tr>
+							<tr class="positive" data-reactid="177">
+								<td data-reactid="179">2</td>
+								<td data-reactid="180">uint256</td>
+								<td data-reactid="181"><code data-reactid="182">licenseID</code></td>
+								<td data-reactid="183">
+									<div data-reactid="184">
+										<p data-reactid="185">Notary's license ID</p>
+									</div>
+								</td>
+							</tr>
+							<tr class="positive" data-reactid="187">
+								<td data-reactid="189">3</td>
+								<td data-reactid="190">uint256</td>
+								<td data-reactid="191"><code data-reactid="192">licenseExpiredAt</code></td>
+								<td data-reactid="193">
+									<div data-reactid="194">
+										<p data-reactid="195">Notary's expiration date</p>
+									</div>
+								</td>
+							</tr>
+							<tr class="positive" data-reactid="197">
+								<td data-reactid="199">4</td>
+								<td data-reactid="200">string</td>
+								<td data-reactid="201"><code data-reactid="202">fullName</code></td>
+								<td data-reactid="203">
+									<div data-reactid="204">
+										<p data-reactid="205">Notary's full name</p>
+									</div>
+								</td>
+							</tr>
+							<tr class="positive" data-reactid="207">
+								<td data-reactid="209">5</td>
+								<td data-reactid="210">string</td>
+								<td data-reactid="211"><code data-reactid="212">streetName</code></td>
+								<td data-reactid="213">
+									<div data-reactid="214">
+										<p data-reactid="215">Notary's address</p>
+									</div>
+								</td>
+							</tr>
+							<tr class="positive" data-reactid="217">
+								<td data-reactid="219">6</td>
+								<td data-reactid="220">string</td>
+								<td data-reactid="221"><code data-reactid="222">state</code></td>
+								<td data-reactid="223">
+									<div data-reactid="224">
+										<p data-reactid="225">Notary's US state full name</p>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="ui segment" data-reactid="145">
+					<div class="ui right label ribbon" data-reactid="146">
+						function
+					</div>
+					<h3 class="ui header" data-reactid="148" style="margin-top:-1.5rem"><code data-reactid="149">upsertValidatorFromGovernance</code> <code class="signature" data-reactid="151">0aeee835</code></h3>
+					<h4 data-reactid="152"></h4>
+					<p data-reactid="153">Adds or changes notary's personal info. Both are from Governance dApp</p>
 					<table class="ui definition table" data-reactid="155">
 						<tbody data-reactid="156">
 							<tr class="positive" data-reactid="157">
