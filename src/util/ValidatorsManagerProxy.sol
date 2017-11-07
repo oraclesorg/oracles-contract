@@ -1,6 +1,7 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.18;// solhint-disable-line compiler-fixed, compiler-gt-0_4
 
-import './../ValidatorsManager.sol';
+import "./../ValidatorsManager.sol";
+
 
 contract ValidatorsManagerProxy is ValidatorsManager {
     function ValidatorsManagerProxy() public ValidatorsManager() {

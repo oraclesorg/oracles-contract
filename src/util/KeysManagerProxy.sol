@@ -1,6 +1,7 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.18;// solhint-disable-line compiler-fixed, compiler-gt-0_4
 
-import './../KeysManager.sol';
+import "./../KeysManager.sol";
+
 
 contract KeysManagerProxy is KeysManager {
     function KeysManagerProxy() public KeysManager() {

@@ -1,7 +1,8 @@
-pragma solidity ^0.4.14;
+pragma solidity ^0.4.18;// solhint-disable-line compiler-fixed, compiler-gt-0_4
 
 import "oracles-contract-validator/ValidatorClass.sol";
 import "./KeysManager.sol";
+
 
 contract ValidatorsManager is ValidatorClass, KeysManager {
     

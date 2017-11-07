@@ -1,7 +1,8 @@
-pragma solidity ^0.4.14;
+pragma solidity ^0.4.18;// solhint-disable-line compiler-fixed, compiler-gt-0_4
 
 import "./Utility.sol";
 import "./ValidatorsManager.sol";
+
 
 contract BallotsManager is ValidatorsManager {
     /**
@@ -118,13 +119,6 @@ contract BallotsManager is ValidatorsManager {
         return ballotsMapping[ballotID].affectedKeyType;
     }
 
-    function toString(address x) internal pure returns (string) {
-        bytes memory b = new bytes(20);
-        for (uint i = 0; i < 20; i++)
-            b[i] = byte(uint8(uint(x) / (2**(8*(19 - i)))));
-        return string(b);
-    }
-
     /**
     @notice Gets ballot's owner full name
     @param ballotID Ballot unique ID
@@ -216,9 +210,19 @@ contract BallotsManager is ValidatorsManager {
         assert(!v.voted[msg.sender]);
         v.voted[msg.sender] = true;
         v.votesAmmount++;
-        if (accept) v.result++;
-        else v.result--;
+        if (accept) {
+            v.result++;
+        } else {
+            v.result--;
+        }
         checkBallotsActivity();
+    }
+
+    function toString(address x) internal pure returns (string) {
+        bytes memory b = new bytes(20);
+        for (uint i = 0; i < 20; i++)
+            b[i] = byte(uint8(uint(x) / (2**(8*(19 - i)))));
+        return string(b);
     }
 
     /**
@@ -229,7 +233,7 @@ contract BallotsManager is ValidatorsManager {
     function removeValidator(uint index) internal returns(address[]) {
         if (index >= validators.length) return;
 
-        for (uint i = index; i<validators.length-1; i++){
+        for (uint i = index; i < validators.length-1; i++) {
             validators[i] = validators[i+1];
         }
         delete validators[validators.length-1];
@@ -238,7 +242,9 @@ contract BallotsManager is ValidatorsManager {
     
     /**
     @notice Checks ballots' activity
-    @dev Deactivate ballots, if ballot's time is finished and implement action: add or remove notary, if votes for are greater votes against, and total votes are greater than 3
+    @dev Deactivate ballots, if ballot's time is finished and 
+    implement action: add or remove notary, if votes for are 
+    greater votes against, and total votes are greater than 3
     */
     function checkBallotsActivity() internal {
         for (uint ijk = 0; ijk < ballots.length; ijk++) {
@@ -246,38 +252,46 @@ contract BallotsManager is ValidatorsManager {
             if (b.votingDeadline < now && b.active) {
                 if ((int(b.votesAmmount) >= int(votingLowerLimit)) && b.result > 0) {
                     if (b.addAction) { //add key
-                        if (b.affectedKeyType == 0) {//mining key
-                            if (licensesIssued < licensesLimit) {
-                                licensesIssued++;
-                                validators.push(b.affectedKey);
-                                InitiateChange(Utility.getLastBlockHash(), validators);
-                            }
-                        } else if (b.affectedKeyType == 1) {//voting key
-                            votingKeys[b.affectedKey] = VotingKey({isActive: true});
-                            votingMiningKeysPair[b.affectedKey] = b.miningKey;
-                        } else if (b.affectedKeyType == 2) {//payout key
-                            payoutKeys[b.affectedKey] = PayoutKey({isActive: true});
-                            miningPayoutKeysPair[b.miningKey] = b.affectedKey;
-                        }
+                        checkBallotsActivityPostActionAdd(b);
                     } else { //invalidate key
-                        if (b.affectedKeyType == 0) {//mining key
-                            for (uint jj = 0; jj < validators.length; jj++) {
-                                if (validators[jj] == b.affectedKey) {
-                                    removeValidator(jj); 
-                                    return;
-                                }
-                            }
-                            disabledValidators.push(b.affectedKey);
-                            validator[b.affectedKey].disablingDate = now;
-                        } else if (b.affectedKeyType == 1) {//voting key
-                            votingKeys[b.affectedKey] = VotingKey({isActive: false});
-                        } else if (b.affectedKeyType == 2) {//payout key
-                            payoutKeys[b.affectedKey] = PayoutKey({isActive: false});
-                        }
+                        checkBallotsActivityPostActionRemove(b);
                     }
                 }
                 b.active = false;
             }
+        }
+    }
+
+    function checkBallotsActivityPostActionAdd(Ballot b) internal {
+        if (b.affectedKeyType == 0) {//mining key
+            if (licensesIssued < licensesLimit) {
+                licensesIssued++;
+                validators.push(b.affectedKey);
+                InitiateChange(Utility.getLastBlockHash(), validators);
+            }
+        } else if (b.affectedKeyType == 1) {//voting key
+            votingKeys[b.affectedKey] = VotingKey({isActive: true});
+            votingMiningKeysPair[b.affectedKey] = b.miningKey;
+        } else if (b.affectedKeyType == 2) {//payout key
+            payoutKeys[b.affectedKey] = PayoutKey({isActive: true});
+            miningPayoutKeysPair[b.miningKey] = b.affectedKey;
+        }
+    }
+
+    function checkBallotsActivityPostActionRemove(Ballot b) internal {
+        if (b.affectedKeyType == 0) {//mining key
+            for (uint jj = 0; jj < validators.length; jj++) {
+                if (validators[jj] == b.affectedKey) {
+                    removeValidator(jj); 
+                    return;
+                }
+            }
+            disabledValidators.push(b.affectedKey);
+            validator[b.affectedKey].disablingDate = now;
+        } else if (b.affectedKeyType == 1) {//voting key
+            votingKeys[b.affectedKey] = VotingKey({isActive: false});
+        } else if (b.affectedKeyType == 2) {//payout key
+            payoutKeys[b.affectedKey] = PayoutKey({isActive: false});
         }
     }
 }
