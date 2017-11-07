@@ -16,7 +16,7 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     @param streetName Notary's address
     @param state Notary's US state full name
     */
-    function addValidator(
+    function insertValidatorFromCeremony(
         address miningKey,
         uint zip,
         uint licenseExpiredAt,
@@ -25,29 +25,40 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
         string streetName,
         string state
     ) public {
-        assert(checkVotingKeyValidity(msg.sender) || checkInitialKey(msg.sender));
-        if (checkVotingKeyValidity(msg.sender)) {
-            if (votingMiningKeysPair[msg.sender] != miningKey) {
-                assert(!isMiningKeyDataExists(miningKey));
-                assert(licensesIssued < licensesLimit);
-            } else {
-                assert(isMiningKeyDataExists(miningKey));
-            }
-        }
-        if (checkInitialKey(msg.sender)) {
+        assert(checkInitialKey(msg.sender));
+        assert(!isMiningKeyDataExists(miningKey));
+        assert(licensesIssued < licensesLimit);
+
+        setValidator(miningKey, fullName, streetName, state, zip, licenseID, licenseExpiredAt, 0, "");
+    }
+
+    /**
+    @notice Adds new notary
+    @param miningKey Notary's mining key
+    @param zip Notary's zip code
+    @param licenseID Notary's license ID
+    @param licenseExpiredAt Notary's expiration date
+    @param fullName Notary's full name
+    @param streetName Notary's address
+    @param state Notary's US state full name
+    */
+    function upsertValidatorFromGovernance(
+        address miningKey,
+        uint zip,
+        uint licenseExpiredAt,
+        string licenseID,
+        string fullName,
+        string streetName,
+        string state
+    ) public {
+        assert(checkVotingKeyValidity(msg.sender));
+        if (votingMiningKeysPair[msg.sender] != miningKey) {
             assert(!isMiningKeyDataExists(miningKey));
             assert(licensesIssued < licensesLimit);
+        } else {
+            assert(isMiningKeyDataExists(miningKey));
         }
-        validator[miningKey] = Validator({
-            fullName: fullName, 
-            streetName: streetName, 
-            state: state, 
-            zip: zip, 
-            licenseID: licenseID, 
-            licenseExpiredAt: licenseExpiredAt, 
-            disablingDate: 0, 
-            disablingTX: ""
-        });
+        setValidator(miningKey, fullName, streetName, state, zip, licenseID, licenseExpiredAt, 0, "");
     }
     
     /**
@@ -129,7 +140,20 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
         return validator[addr].disablingDate;
     }
 
-    function isMiningKeyDataExists(address miningKey) internal returns (bool) {
+    function setValidator(address miningKey, string fullName, string streetName, string state, uint zip, string licenseID, uint licenseExpiredAt, uint disablingDate, string disablingTX) internal {
+        validator[miningKey] = Validator({
+            fullName: fullName, 
+            streetName: streetName, 
+            state: state, 
+            zip: zip, 
+            licenseID: licenseID, 
+            licenseExpiredAt: licenseExpiredAt, 
+            disablingDate: disablingDate, 
+            disablingTX: disablingTX
+        });
+    }
+
+    function isMiningKeyDataExists(address miningKey) internal view returns (bool) {
         bytes memory name = bytes(validator[miningKey].fullName);
         return name.length > 0;
     }
