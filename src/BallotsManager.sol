@@ -12,6 +12,7 @@ contract BallotsManager is ValidatorsManager {
     @param miningKey Mining key of notary, which is proposed to add or remove
     @param affectedKey Mining/payout/voting key of notary, which is proposed to add or remove
     @param affectedKeyType Type of affectedKey: 0 = mining key, 1 = voting key, 2 = payout key
+    @param duration Duration of ballot in minutes
     @param addAction Flag: adding is true, removing is false
     @param memo Ballot's memo
     */
@@ -21,6 +22,7 @@ contract BallotsManager is ValidatorsManager {
         address miningKey,
         address affectedKey,
         uint affectedKeyType,
+        uint duration,
         bool addAction,
         string memo
     ) public {
@@ -56,7 +58,7 @@ contract BallotsManager is ValidatorsManager {
             affectedKeyType: affectedKeyType,
             createdAt: now,
             votingStart: votingStart,
-            votingDeadline: votingStart + 48 * 60 minutes,
+            votingDeadline: votingStart + duration * 1 minutes,
             votesAmmount: 0,
             result: 0,
             addAction: addAction,
