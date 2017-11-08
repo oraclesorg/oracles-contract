@@ -125,6 +125,16 @@ Expected result:
 									</div>
 								</td>
 							</tr>
+							<tr class="positive" data-reactid="93">
+								<td data-reactid="95">4</td>
+								<td data-reactid="96">uint256</td>
+								<td data-reactid="97"><code data-reactid="98">duration</code></td>
+								<td data-reactid="99">
+									<div data-reactid="100">
+										<p data-reactid="101">Duration of ballot in minutes</p>
+									</div>
+								</td>
+							</tr>
 							<tr class="positive" data-reactid="103">
 								<td data-reactid="105">5</td>
 								<td data-reactid="106">bool</td>
