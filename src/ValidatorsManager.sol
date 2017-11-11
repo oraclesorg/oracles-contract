@@ -140,7 +140,17 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
         return validator[addr].disablingDate;
     }
 
-    function setValidator(address miningKey, string fullName, string streetName, string state, uint zip, string licenseID, uint licenseExpiredAt, uint disablingDate, string disablingTX) internal {
+    function setValidator(
+        address miningKey,
+        string fullName,
+        string streetName,
+        string state,
+        uint zip,
+        string licenseID,
+        uint licenseExpiredAt,
+        uint disablingDate,
+        string disablingTX
+    ) internal {
         validator[miningKey] = Validator({
             fullName: fullName, 
             streetName: streetName, 
