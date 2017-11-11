@@ -53,7 +53,7 @@ contract('validatorsManager [all features]', function(accounts) {
         );
     });
 
-    it('insertValidatorFromCeremony [update own data with voting key]', async () => {
+    it('upsertValidatorFromGovernance [update own data with voting key]', async () => {
         await validatorsManager.addInitialKey(accounts[0], {from: systemOwner});
         await validatorsManager.insertValidatorFromCeremony(
             keys1.mining,
@@ -133,7 +133,7 @@ contract('validatorsManager [all features]', function(accounts) {
             ).should.be.rejectedWith('invalid opcode');
     });
 
-    it('insertValidatorFromCeremony [add new data with voting key]', async () => {
+    it('upsertValidatorFromGovernance [add new data with voting key]', async () => {
         await validatorsManager.addInitialKey(accounts[0], {from: systemOwner});
         await validatorsManager.insertValidatorFromCeremony(
             keys1.mining,
