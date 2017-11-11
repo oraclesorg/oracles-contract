@@ -8,7 +8,7 @@ contract SimpleOwned is Owned {
         owner = 0x338a7867A35367D120011B2DA1D8E2a8A60B9bC0;
     }
 
-    function protectedFunc() public view onlyOwner returns (bool) {
+    function protectedFunc() public onlyOwner view returns (bool) {
         return true;
     }
 }
