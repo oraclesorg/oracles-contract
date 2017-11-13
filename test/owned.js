@@ -22,7 +22,7 @@ contract('owned [all features]', function(accounts) {
 
     it('method protected by onlyOwner is restricted for non owner', async () => {
         await ownedContract.protectedFunc({from: accounts[0]})
-            .should.be.rejectedWith('invalid opcode');
+            .should.be.rejectedWith('transaction: revert');
     });
 
 });

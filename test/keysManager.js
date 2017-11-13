@@ -35,7 +35,7 @@ contract('keysManager [all features]', function(accounts) {
 
     it('method addInitialKey is restricted for non-admin', async () => {
         await keysManager.addInitialKey(accounts[1], {from: accounts[0]})
-            .should.be.rejectedWith('invalid opcode');
+            .should.be.rejectedWith('transaction: revert');
     });
 
     it('addInitialKey is allowed to add only limited number of keys', async () => {
