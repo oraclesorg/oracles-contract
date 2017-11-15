@@ -12,6 +12,10 @@ contract KeysManagerProxy is KeysManager {
         return initialKeysIssued;
     }
 
+    function getInitialKeysInvalidated() public view returns (int8) {
+        return initialKeysInvalidated;
+    }
+
     function getLicensesIssued() public view returns (int8) {
         return licensesIssued;
     }

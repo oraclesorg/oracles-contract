@@ -8,10 +8,11 @@ import "oracles-contract-ballot/BallotClass.sol";
 
 
 contract KeysManager is Owned, Utility, KeyClass, ValidatorClass, BallotClass {
-    int8 internal initialKeysIssued = 0;
-    int8 internal initialKeysLimit = 25;
-    int8 internal licensesIssued = 0;
-    int8 internal licensesLimit = 52;
+    int8 public initialKeysIssued = 0;
+    int8 public initialKeysInvalidated = 0;
+    int8 public initialKeysLimit = 25;
+    int8 public licensesIssued = 0;
+    int8 public licensesLimit = 52;
     
     /**
     @notice Adds initial key
@@ -42,8 +43,9 @@ contract KeysManager is Owned, Utility, KeyClass, ValidatorClass, BallotClass {
         miningKeys[miningAddr] = MiningKey({isActive: true});
         payoutKeys[payoutAddr] = PayoutKey({isActive: true});
         votingKeys[votingAddr] = VotingKey({isActive: true});
-        //add mining key to list of validators
+        initialKeysInvalidated++;
         licensesIssued++;
+        //add mining key to list of validators
         validators.push(miningAddr);
         InitiateChange(Utility.getLastBlockHash(), validators);
         votingMiningKeysPair[votingAddr] = miningAddr;
@@ -55,7 +57,7 @@ contract KeysManager is Owned, Utility, KeyClass, ValidatorClass, BallotClass {
     @param key Initial key
     @return { "value" : "Is initial key new or not new" }
     */
-    function checkInitialKey(address key) public constant returns (bool value) {
+    function checkInitialKey(address key) public view returns (bool value) {
         // Next line is disabled because it does not make sense
         //assert(msg.sender == key);
         return initialKeys[key].isNew;
@@ -66,7 +68,7 @@ contract KeysManager is Owned, Utility, KeyClass, ValidatorClass, BallotClass {
     @param addr Payout key
     @return { "value" : "Is payout key active or not active" }
     */
-    function checkPayoutKeyValidity(address addr) public constant returns (bool value) {
+    function checkPayoutKeyValidity(address addr) public view returns (bool value) {
         return payoutKeys[addr].isActive;
     }
     
@@ -75,7 +77,7 @@ contract KeysManager is Owned, Utility, KeyClass, ValidatorClass, BallotClass {
     @param addr Voting key
     @return { "value" : "Is voting key active or not active" }
     */
-    function checkVotingKeyValidity(address addr) public constant returns (bool value) {
+    function checkVotingKeyValidity(address addr) public view returns (bool value) {
         return votingKeys[addr].isActive;
     }
 }

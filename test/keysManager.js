@@ -40,7 +40,8 @@ contract('keysManager [all features]', function(accounts) {
 
     it('addInitialKey is allowed to add only limited number of keys', async () => {
         let idx = 0;
-        while(idx < 25) {
+        let initialKeysLimit = await keysManager.initialKeysLimit.call();
+        while(idx < initialKeysLimit) {
             let addr = addressFromNumber(idx);//sprintf('0x%040x' % idx);
             await keysManager.addInitialKey(addr, {from: systemOwner});
             idx++;
@@ -98,6 +99,17 @@ contract('keysManager [all features]', function(accounts) {
         await keysManager.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]});
         big(1).should.be.bignumber.equal(
             await keysManager.getLicensesIssued()
+        );
+    });
+
+    it('initialKeysInvalidated is incremented by createKeys', async () => {
+        big(0).should.be.bignumber.equal(
+            await keysManager.getInitialKeysInvalidated()
+        );
+        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
+        await keysManager.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]});
+        big(1).should.be.bignumber.equal(
+            await keysManager.getInitialKeysInvalidated()
         );
     });
 

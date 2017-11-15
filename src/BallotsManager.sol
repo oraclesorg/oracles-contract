@@ -72,7 +72,7 @@ contract BallotsManager is ValidatorsManager {
     @notice Gets active ballots' ids
     @return { "value" : "Array of active ballots ids" }
     */
-    function getBallots() public constant returns (uint[] value) {
+    function getBallots() public view returns (uint[] value) {
         return ballots;
     }
     
@@ -81,7 +81,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's memo" }
     */
-    function getBallotMemo(uint ballotID) public constant returns (string value) {
+    function getBallotMemo(uint ballotID) public view returns (string value) {
         return ballotsMapping[ballotID].memo;
     }
     
@@ -90,7 +90,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's action: adding is true, removing is false" }
     */
-    function getBallotAction(uint ballotID) public constant returns (bool value) {
+    function getBallotAction(uint ballotID) public view returns (bool value) {
         return ballotsMapping[ballotID].addAction;
     }
     
@@ -99,7 +99,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Notary's mining key" }
     */
-    function getBallotMiningKey(uint ballotID) public constant returns (address value) {
+    function getBallotMiningKey(uint ballotID) public view returns (address value) {
         return ballotsMapping[ballotID].miningKey;
     }
 
@@ -108,7 +108,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's affected key" }
     */
-    function getBallotAffectedKey(uint ballotID) public constant returns (address value) {
+    function getBallotAffectedKey(uint ballotID) public view returns (address value) {
         return ballotsMapping[ballotID].affectedKey;
     }
 
@@ -117,7 +117,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's affected key type" }
     */
-    function getBallotAffectedKeyType(uint ballotID) public constant returns (uint value) {
+    function getBallotAffectedKeyType(uint ballotID) public view returns (uint value) {
         return ballotsMapping[ballotID].affectedKeyType;
     }
 
@@ -126,7 +126,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's owner full name" }
     */
-    function getBallotOwner(uint ballotID) public constant returns (string value) {
+    function getBallotOwner(uint ballotID) public view returns (string value) {
         address ballotOwnerVotingKey = ballotsMapping[ballotID].owner;
         address ballotOwnerMiningKey = votingMiningKeysPair[ballotOwnerVotingKey];
         string storage validatorFullName = validator[ballotOwnerMiningKey].fullName;
@@ -142,7 +142,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's creation time" }
     */
-    function ballotCreatedAt(uint ballotID) public constant returns (uint value) {
+    function ballotCreatedAt(uint ballotID) public view returns (uint value) {
         return ballotsMapping[ballotID].createdAt;
     }
     
@@ -151,7 +151,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's voting start date" }
     */
-    function getBallotVotingStart(uint ballotID) public constant returns (uint value) {
+    function getBallotVotingStart(uint ballotID) public view returns (uint value) {
         return ballotsMapping[ballotID].votingStart;
     }
     
@@ -160,7 +160,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's voting end date" }
     */
-    function getBallotVotingEnd(uint ballotID) public constant returns (uint value) {
+    function getBallotVotingEnd(uint ballotID) public view returns (uint value) {
         return ballotsMapping[ballotID].votingDeadline;
     }
     
@@ -169,7 +169,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's amount of votes for" }
     */
-    function getVotesFor(uint ballotID) public constant returns (int value) {
+    function getVotesFor(uint ballotID) public view returns (int value) {
         return (ballotsMapping[ballotID].votesAmmount + ballotsMapping[ballotID].result)/2;
     }
     
@@ -178,7 +178,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's amount of votes against" }
     */
-    function getVotesAgainst(uint ballotID) public constant returns (int value) {
+    function getVotesAgainst(uint ballotID) public view returns (int value) {
         return (ballotsMapping[ballotID].votesAmmount - ballotsMapping[ballotID].result)/2;
     }
     
@@ -187,7 +187,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's activity: active or not" }
     */
-    function ballotIsActive(uint ballotID) public constant returns (bool value) {
+    function ballotIsActive(uint ballotID) public view returns (bool value) {
         return ballotsMapping[ballotID].active;
     }
 
@@ -196,7 +196,7 @@ contract BallotsManager is ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot is already voted by signer of current transaction: yes or no" }
     */
-    function ballotIsVoted(uint ballotID) public constant returns (bool value) {
+    function ballotIsVoted(uint ballotID) public view returns (bool value) {
         return ballotsMapping[ballotID].voted[msg.sender];
     }
     
