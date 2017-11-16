@@ -134,7 +134,7 @@ contract('keysManager [all features]', function(accounts) {
         );
     });
 
-    it('createKeys generates event', async() => {
+    /*it('createKeys generates event', async() => {
         let miningKey = addressFromNumber(1);
         let payoutKey = addressFromNumber(2);
         let votingKey = addressFromNumber(3);
@@ -148,7 +148,7 @@ contract('keysManager [all features]', function(accounts) {
         parentBlockHash.should.be.equal(
             res.logs[0].args['_parent_hash']
         );
-    });
+    });*/
 
     it('checkPayoutKeyValidity', async () => {
         let miningKey = addressFromNumber(1);
