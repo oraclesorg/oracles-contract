@@ -18,10 +18,12 @@ contract ValidatorsManager is ValidatorClass, Owned, Utility {
     }
 
     function setBallotsManager(address addr) public onlyOwner {
+        require(msg.sender == BallotsManager(addr).owner());
         ballotsManager = BallotsManager(addr);
     }
 
     function setKeysManager(address addr) public onlyOwner {
+        require(msg.sender == KeysManager(addr).owner());
         keysManager = KeysManager(addr);
     }
 

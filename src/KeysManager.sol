@@ -15,6 +15,16 @@ contract KeysManager is KeyClass, Owned {
 
     BallotsManager public ballotsManager;
     ValidatorsManager public validatorsManager;
+
+    function setBallotsManager(address addr) public onlyOwner {
+        require(msg.sender == BallotsManager(addr).owner());
+        ballotsManager = BallotsManager(addr);
+    }
+
+    function setValidatorsManager(address addr) public onlyOwner {
+        require(msg.sender == ValidatorsManager(addr).owner());
+        validatorsManager = ValidatorsManager(addr);
+    }
     
     /**
     @notice Adds initial key
@@ -26,14 +36,6 @@ contract KeysManager is KeyClass, Owned {
         assert(!initialKeys[key].isNew);
         initialKeysIssued++;
         initialKeys[key] = InitialKey({isNew: true});
-    }
-
-    function setBallotsManager(address addr) public onlyOwner {
-        ballotsManager = BallotsManager(addr);
-    }
-
-    function setValidatorsManager(address addr) public onlyOwner {
-        validatorsManager = ValidatorsManager(addr);
     }
     
     /**
