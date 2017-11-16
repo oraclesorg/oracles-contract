@@ -4,10 +4,9 @@ import "./Owned.sol";
 import "./Utility.sol";
 import "oracles-contract-key/KeyClass.sol";
 import "oracles-contract-validator/ValidatorClass.sol";
-import "oracles-contract-ballot/BallotClass.sol";
 
 
-contract KeysManager is Owned, Utility, KeyClass, ValidatorClass, BallotClass {
+contract KeysManager is Owned, Utility, KeyClass, ValidatorClass {
     int8 public initialKeysIssued = 0;
     int8 public initialKeysInvalidated = 0;
     int8 public initialKeysLimit = 25;
