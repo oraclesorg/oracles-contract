@@ -4,7 +4,6 @@ let Utility = artifacts.require('Utility');
 let KeysManagerProxy = artifacts.require('KeysManagerProxy');
 let ValidatorsManagerProxy = artifacts.require('ValidatorsManagerProxy');
 
-
 async function deployTestContracts(accounts) {
     let utilityContract = await Utility.new();
     let systemOwner = data.SYSTEM_OWNER_ADDRESS;

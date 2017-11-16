@@ -167,4 +167,19 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
         bytes memory name = bytes(validator[miningKey].fullName);
         return name.length > 0;
     }
+
+    /**
+    @notice Removes element by index from validators array and shift elements in array
+    @param index Element's index to remove
+    @return { "value" : "Updated validators array with removed element at index" }
+    */
+    function removeValidator(uint index) internal returns(address[]) {
+        if (index >= validators.length) return;
+
+        for (uint i = index; i < validators.length-1; i++) {
+            validators[i] = validators[i+1];
+        }
+        delete validators[validators.length-1];
+        validators.length--;
+    }
 }

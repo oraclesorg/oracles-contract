@@ -1,6 +1,5 @@
 pragma solidity 0.4.18;
 
-import "./Utility.sol";
 import "./ValidatorsManager.sol";
 
 
@@ -226,32 +225,9 @@ contract BallotsManager is ValidatorsManager {
     */
     function finalizeBallot(uint ballotID) public {
         assert(checkVotingKeyValidity(msg.sender));
-        Ballot storage b = ballotsMapping[ballotID];
-        if (!finalizeBallotInternal(b)) {
+        if (!finalizeBallotInternal(ballotsMapping[ballotID])) {
             checkBallotsActivity();
         }
-    }
-
-    function toString(address x) internal pure returns (string) {
-        bytes memory b = new bytes(20);
-        for (uint i = 0; i < 20; i++)
-            b[i] = byte(uint8(uint(x) / (2**(8*(19 - i)))));
-        return string(b);
-    }
-
-    /**
-    @notice Removes element by index from validators array and shift elements in array
-    @param index Element's index to remove
-    @return { "value" : "Updated validators array with removed element at index" }
-    */
-    function removeValidator(uint index) internal returns(address[]) {
-        if (index >= validators.length) return;
-
-        for (uint i = index; i < validators.length-1; i++) {
-            validators[i] = validators[i+1];
-        }
-        delete validators[validators.length-1];
-        validators.length--;
     }
 
     function finalizeBallotInternal(Ballot b) internal returns(bool finalized) {
@@ -269,7 +245,7 @@ contract BallotsManager is ValidatorsManager {
             return false;
         }
     }
-    
+
     /**
     @notice Checks ballots' activity
     @dev Deactivate ballots, if ballot's time is finished and 
@@ -278,8 +254,7 @@ contract BallotsManager is ValidatorsManager {
     */
     function checkBallotsActivity() internal {
         for (uint ijk = 0; ijk < ballots.length; ijk++) {
-            Ballot storage b = ballotsMapping[ballots[ijk]];
-            finalizeBallotInternal(b);
+            finalizeBallotInternal(ballotsMapping[ballots[ijk]]);
         }
     }
 
