@@ -12,8 +12,8 @@ async function deployTestContracts(accounts) {
     let keysManager = await KeysManagerProxy.new();
     let ballotsManager = await BallotsManagerProxy.new();
 
-    await keysManager.setValidatorsManager(validatorsManager.address, {from: "0x338a7867A35367D120011B2DA1D8E2a8A60B9bC0"})
-    await keysManager.setBallotsManager(ballotsManager.address, {from: "0x338a7867A35367D120011B2DA1D8E2a8A60B9bC0"})
+    let setValidatorsManagerForKeysManager = await keysManager.setValidatorsManager(validatorsManager.address, {from: "0x338a7867A35367D120011B2DA1D8E2a8A60B9bC0"})
+    let setBallotsManagerForKeysManager = await keysManager.setBallotsManager(ballotsManager.address, {from: "0x338a7867A35367D120011B2DA1D8E2a8A60B9bC0"})
     await validatorsManager.setKeysManager(keysManager.address, {from: "0x338a7867A35367D120011B2DA1D8E2a8A60B9bC0"});
     await validatorsManager.setBallotsManager(ballotsManager.address, {from: "0x338a7867A35367D120011B2DA1D8E2a8A60B9bC0"});
     //await ballotsManager.setKeysManager(keysManager.address, {from: "0x338a7867A35367D120011B2DA1D8E2a8A60B9bC0"});
@@ -25,6 +25,8 @@ async function deployTestContracts(accounts) {
         keysManager,
         validatorsManager,
         ballotsManager,
+        setValidatorsManagerForKeysManager,
+        setBallotsManagerForKeysManager
     }
 }
 

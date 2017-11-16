@@ -10,10 +10,10 @@ let {addressFromNumber} = require('./util/ether.js');
 let {deployTestContracts} = require('./util/deploy.js');
 
 contract('keysManager [all features]', function(accounts) {
-    let {systemOwner, keysManager} = {};
+    let {systemOwner, keysManager, validatorsManager} = {};
 
     beforeEach(async () => {
-        ({systemOwner, keysManager}  = await deployTestContracts());
+        ({systemOwner, keysManager, validatorsManager}  = await deployTestContracts());
     });
 
     it('method addInitialKey is avail for admin', async () => {
@@ -129,7 +129,7 @@ contract('keysManager [all features]', function(accounts) {
             await keysManager.votingKeys(votingKey)
         );
         miningKey.should.be.equal(
-            await keysManager.validators(0)
+            await validatorsManager.validators(0)
         );
     });
 
