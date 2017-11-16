@@ -1,10 +1,22 @@
 pragma solidity 0.4.18;
 
+import "./Owned.sol";
+import "./Utility.sol";
 import "oracles-contract-ballot/BallotClass.sol";
+import "./KeysManager.sol";
 import "./ValidatorsManager.sol";
 
 
-contract BallotsManager is BallotClass, ValidatorsManager {
+contract BallotsManager is BallotClass, Utility, Owned {
+
+    KeysManager public keysManager;
+    ValidatorsManager public validatorsManager;
+
+    function BallotsManager() public {
+        keysManager = KeysManager(0x00);
+        validatorsManager = ValidatorsManager(0x00);
+    }
+
     /**
     @notice Adds new Ballot
     @param ballotID Ballot unique ID
@@ -26,29 +38,44 @@ contract BallotsManager is BallotClass, ValidatorsManager {
         bool addAction,
         string memo
     ) public {
-        assert(checkVotingKeyValidity(msg.sender));
-        assert(!(licensesIssued == licensesLimit && addAction));
+        assert(keysManager.checkVotingKeyValidity(msg.sender));
+        assert(!(keysManager.licensesIssued() == keysManager.licensesLimit() && addAction));
         assert(ballotsMapping[ballotID].createdAt <= 0);
         if (affectedKeyType == 0) {//mining key
             bool validatorIsAdded = false;
-            for (uint i = 0; i < validators.length; i++) {
-                assert(!(validators[i] == affectedKey && addAction)); //validator is already added before
-                if (validators[i] == affectedKey) {
+            uint validatorLength = validatorsManager.getValidatorsLength();
+            for (uint i = 0; i < validatorLength; i++) {
+                assert(!(validatorsManager.getValidatorAtPosition(i) == affectedKey && addAction)); //validator is already added before
+                if (validatorsManager.getValidatorAtPosition(i) == affectedKey) {
                     validatorIsAdded = true;
                     break;
                 }
             }
-            for (uint j = 0; j < disabledValidators.length; j++) {
-                assert(disabledValidators[j] != affectedKey); //validator is already removed before
+            uint disabledValidatorsLength = validatorsManager.getDisabledValidatorsLength();
+            for (uint j = 0; j < disabledValidatorsLength; j++) {
+                assert(validatorsManager.getDisabledValidatorAtPosition(j) != affectedKey); //validator is already removed before
             }
             assert(!(!validatorIsAdded && !addAction)); // no such validator in validators array to remove it
         } else if (affectedKeyType == 1) {//voting key
-            assert(!(checkVotingKeyValidity(affectedKey) && addAction)); //voting key is already added before
-            assert(!(!checkVotingKeyValidity(affectedKey) && !addAction)); //no such voting key to remove it
+            assert(!(keysManager.checkVotingKeyValidity(affectedKey) && addAction)); //voting key is already added before
+            assert(!(!keysManager.checkVotingKeyValidity(affectedKey) && !addAction)); //no such voting key to remove it
         } else if (affectedKeyType == 2) {//payout key
-            assert(!(checkPayoutKeyValidity(affectedKey) && addAction)); //payout key is already added before
-            assert(!(!checkPayoutKeyValidity(affectedKey) && !addAction)); //no such payout key to remove it
+            assert(!(keysManager.checkPayoutKeyValidity(affectedKey) && addAction)); //payout key is already added before
+            assert(!(!keysManager.checkPayoutKeyValidity(affectedKey) && !addAction)); //no such payout key to remove it
         }
+        addBallotInternal(ballotID, owner, miningKey, affectedKey, affectedKeyType, duration, addAction, memo);
+    }
+
+    function addBallotInternal(
+        uint ballotID,
+        address owner,
+        address miningKey,
+        address affectedKey,
+        uint affectedKeyType,
+        uint duration,
+        bool addAction,
+        string memo
+    ) internal {
         uint votingStart = now;
         ballotsMapping[ballotID] = Ballot({
             owner: owner,
@@ -65,7 +92,6 @@ contract BallotsManager is BallotClass, ValidatorsManager {
             active: true
         });
         ballots.push(ballotID);
-        checkBallotsActivity();
     }
     
     /**
@@ -126,15 +152,10 @@ contract BallotsManager is BallotClass, ValidatorsManager {
     @param ballotID Ballot unique ID
     @return { "value" : "Ballot's owner full name" }
     */
-    function getBallotOwner(uint ballotID) public view returns (string value) {
+    function getBallotOwner(uint ballotID) public view returns (address value) {
         address ballotOwnerVotingKey = ballotsMapping[ballotID].owner;
-        address ballotOwnerMiningKey = votingMiningKeysPair[ballotOwnerVotingKey];
-        string storage validatorFullName = validator[ballotOwnerMiningKey].fullName;
-        bytes memory ownerName = bytes(validatorFullName);
-        if (ownerName.length == 0)
-            return toString(ballotOwnerMiningKey);
-        else
-            return validatorFullName;
+        address ballotOwnerMiningKey = keysManager.votingMiningKeysPair(ballotOwnerVotingKey);
+        return ballotOwnerMiningKey;
     }
     
     /**
@@ -206,7 +227,7 @@ contract BallotsManager is BallotClass, ValidatorsManager {
     @param accept Vote for is true, vote against is false
     */
     function vote(uint ballotID, bool accept) public {
-        assert(checkVotingKeyValidity(msg.sender));
+        assert(keysManager.checkVotingKeyValidity(msg.sender));
         Ballot storage v =  ballotsMapping[ballotID];
         assert(v.votingDeadline >= now);
         assert(!v.voted[msg.sender]);
@@ -217,7 +238,6 @@ contract BallotsManager is BallotClass, ValidatorsManager {
         } else {
             v.result--;
         }
-        checkBallotsActivity();
     }
 
     /**
@@ -225,7 +245,7 @@ contract BallotsManager is BallotClass, ValidatorsManager {
     @dev Finalizes ballot
     */
     function finalizeBallot(uint ballotID) public {
-        assert(checkVotingKeyValidity(msg.sender));
+        assert(keysManager.checkVotingKeyValidity(msg.sender));
         if (!finalizeBallotInternal(ballotsMapping[ballotID])) {
             checkBallotsActivity();
         }
@@ -261,34 +281,33 @@ contract BallotsManager is BallotClass, ValidatorsManager {
 
     function checkBallotsActivityPostActionAdd(Ballot b) internal {
         if (b.affectedKeyType == 0) {//mining key
-            if (licensesIssued < licensesLimit) {
-                licensesIssued++;
-                validators.push(b.affectedKey);
-                InitiateChange(Utility.getLastBlockHash(), validators);
+            if (keysManager.licensesIssued() < keysManager.licensesLimit()) {
+                keysManager.increaseLicenses();
+                validatorsManager.addValidator(b.affectedKey);
             }
         } else if (b.affectedKeyType == 1) {//voting key
-            votingKeys[b.affectedKey] = VotingKey({isActive: true});
-            votingMiningKeysPair[b.affectedKey] = b.miningKey;
+            keysManager.setVotingKey(b.affectedKey, true);
+            keysManager.setVotingMiningKeysPair(b.affectedKey, b.miningKey);
         } else if (b.affectedKeyType == 2) {//payout key
-            payoutKeys[b.affectedKey] = PayoutKey({isActive: true});
-            miningPayoutKeysPair[b.miningKey] = b.affectedKey;
+            keysManager.setPayoutKey(b.affectedKey, true);
+            keysManager.setMiningPayoutKeysPair(b.miningKey, b.affectedKey);
         }
     }
 
     function checkBallotsActivityPostActionRemove(Ballot b) internal {
         if (b.affectedKeyType == 0) {//mining key
-            for (uint jj = 0; jj < validators.length; jj++) {
-                if (validators[jj] == b.affectedKey) {
-                    removeValidator(jj); 
+            uint validatorLength = validatorsManager.getValidatorsLength();
+            for (uint jj = 0; jj < validatorLength; jj++) {
+                if (validatorsManager.getValidatorAtPosition(jj) == b.affectedKey) {
+                    validatorsManager.removeValidator(jj); 
                     return;
                 }
             }
-            disabledValidators.push(b.affectedKey);
-            validator[b.affectedKey].disablingDate = now;
+            validatorsManager.disableValidator(b.affectedKey);
         } else if (b.affectedKeyType == 1) {//voting key
-            votingKeys[b.affectedKey] = VotingKey({isActive: false});
+            keysManager.setVotingKey(b.affectedKey, false);
         } else if (b.affectedKeyType == 2) {//payout key
-            payoutKeys[b.affectedKey] = PayoutKey({isActive: false});
+            keysManager.setPayoutKey(b.affectedKey, false);
         }
     }
 }

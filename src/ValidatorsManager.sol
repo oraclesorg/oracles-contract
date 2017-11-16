@@ -1,11 +1,30 @@
 pragma solidity 0.4.18;
 
+import "./Owned.sol";
+import "./Utility.sol";
 import "oracles-contract-validator/ValidatorClass.sol";
 import "./KeysManager.sol";
+import "./BallotsManager.sol";
 
 
-contract ValidatorsManager is ValidatorClass, KeysManager {
-    
+contract ValidatorsManager is ValidatorClass, Owned, Utility {
+
+    BallotsManager public ballotsManager;
+    KeysManager public keysManager;
+
+    function ValidatorsManager() public {
+        validators.push(owner);
+        InitiateChange(Utility.getLastBlockHash(), validators);
+    }
+
+    function setBallotsManager(address addr) public onlyOwner {
+        ballotsManager = BallotsManager(addr);
+    }
+
+    function setKeysManager(address addr) public onlyOwner {
+        keysManager = KeysManager(addr);
+    }
+
     /**
     @notice Adds new notary
     @param miningKey Notary's mining key
@@ -25,9 +44,9 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
         string streetName,
         string state
     ) public {
-        assert(checkInitialKey(msg.sender));
+        assert(keysManager.checkInitialKey(msg.sender));
         assert(!isMiningKeyDataExists(miningKey));
-        assert(initialKeysInvalidated < licensesLimit);
+        assert(keysManager.initialKeysInvalidated() < keysManager.licensesLimit());
 
         setValidator(miningKey, fullName, streetName, state, zip, licenseID, licenseExpiredAt, 0, "");
     }
@@ -51,10 +70,10 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
         string streetName,
         string state
     ) public {
-        assert(checkVotingKeyValidity(msg.sender));
-        if (votingMiningKeysPair[msg.sender] != miningKey) {
+        assert(keysManager.checkVotingKeyValidity(msg.sender));
+        if (keysManager.votingMiningKeysPair(msg.sender) != miningKey) {
             assert(!isMiningKeyDataExists(miningKey));
-            assert(licensesIssued < licensesLimit);
+            assert(keysManager.licensesIssued() < keysManager.licensesLimit());
         } else {
             assert(isMiningKeyDataExists(miningKey));
         }
@@ -68,6 +87,14 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     function getValidators() public view returns (address[] value) {
         return validators;
     }
+
+    function getValidatorsLength() public view returns (uint value) {
+        return validators.length;
+    }
+
+    function getValidatorAtPosition(uint i) public view returns (address value) {
+        return validators[i];
+    }
     
     /**
     @notice Gets disabled notaries mining keys
@@ -75,6 +102,14 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     */
     function getDisabledValidators() public view returns (address[] value) {
         return disabledValidators;
+    }
+
+    function getDisabledValidatorsLength() public view returns (uint value) {
+        return disabledValidators.length;
+    }
+
+    function getDisabledValidatorAtPosition(uint i) public view returns (address value) {
+        return disabledValidators[i];
     }
     
     /**
@@ -140,6 +175,34 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
         return validator[addr].disablingDate;
     }
 
+    function addValidator(address addr) public {
+        require(msg.sender == address(ballotsManager) || msg.sender == address(keysManager));
+        validators.push(addr);
+        InitiateChange(Utility.getLastBlockHash(), validators);
+    }
+
+    function disableValidator(address addr) public {
+        require(msg.sender == address(ballotsManager));
+        disabledValidators.push(addr);
+        validator[addr].disablingDate = now;
+    }
+
+    /**
+    @notice Removes element by index from validators array and shift elements in array
+    @param index Element's index to remove
+    @return { "value" : "Updated validators array with removed element at index" }
+    */
+    function removeValidator(uint index) public returns(address[]) {
+        require(msg.sender == address(ballotsManager));
+        if (index >= validators.length) return;
+
+        for (uint i = index; i < validators.length-1; i++) {
+            validators[i] = validators[i+1];
+        }
+        delete validators[validators.length-1];
+        validators.length--;
+    }
+
     function setValidator(
         address miningKey,
         string fullName,
@@ -166,20 +229,5 @@ contract ValidatorsManager is ValidatorClass, KeysManager {
     function isMiningKeyDataExists(address miningKey) internal view returns (bool) {
         bytes memory name = bytes(validator[miningKey].fullName);
         return name.length > 0;
-    }
-
-    /**
-    @notice Removes element by index from validators array and shift elements in array
-    @param index Element's index to remove
-    @return { "value" : "Updated validators array with removed element at index" }
-    */
-    function removeValidator(uint index) internal returns(address[]) {
-        if (index >= validators.length) return;
-
-        for (uint i = index; i < validators.length-1; i++) {
-            validators[i] = validators[i+1];
-        }
-        delete validators[validators.length-1];
-        validators.length--;
     }
 }
