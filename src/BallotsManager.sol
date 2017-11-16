@@ -12,9 +12,12 @@ contract BallotsManager is BallotClass, Utility, Owned {
     KeysManager public keysManager;
     ValidatorsManager public validatorsManager;
 
-    function BallotsManager() public {
-        keysManager = KeysManager(0x00);
-        validatorsManager = ValidatorsManager(0x00);
+    function setValidatorsManager(address addr) public onlyOwner {
+        validatorsManager = ValidatorsManager(addr);
+    }
+
+    function setKeysManager(address addr) public onlyOwner {
+        keysManager = KeysManager(addr);
     }
 
     /**

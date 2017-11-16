@@ -119,6 +119,7 @@ contract('keysManager [all features]', function(accounts) {
         let votingKey = addressFromNumber(3);
         await keysManager.addInitialKey(accounts[1], {from: systemOwner});
         res = await keysManager.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
+        let i = await keysManager.miningKeys(miningKey)
         true.should.be.equal(
             await keysManager.miningKeys(miningKey)
         );
@@ -129,7 +130,7 @@ contract('keysManager [all features]', function(accounts) {
             await keysManager.votingKeys(votingKey)
         );
         miningKey.should.be.equal(
-            await validatorsManager.validators(0)
+            await validatorsManager.validators(1)
         );
     });
 

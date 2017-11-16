@@ -176,7 +176,8 @@ contract ValidatorsManager is ValidatorClass, Owned, Utility {
     }
 
     function addValidator(address addr) public {
-        require(msg.sender == address(ballotsManager) || msg.sender == address(keysManager));
+        require(msg.sender == address(ballotsManager) 
+        || msg.sender == address(keysManager));
         validators.push(addr);
         InitiateChange(Utility.getLastBlockHash(), validators);
     }

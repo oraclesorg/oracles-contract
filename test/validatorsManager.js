@@ -11,7 +11,7 @@ let util = require('util');
 let {deployTestContracts} = require('./util/deploy.js');
 
 contract('validatorsManager [all features]', function(accounts) {
-    let {systemOwner, keysManager, validatorsManager} = {};
+    let {systemOwner, trueOwner, keysManager, validatorsManager} = {};
     let keys1 = {
         mining: accounts[1],
         payout: accounts[2],
@@ -40,7 +40,7 @@ contract('validatorsManager [all features]', function(accounts) {
     };
 
     beforeEach(async () => {
-        ({systemOwner, keysManager, validatorsManager}  = await deployTestContracts());
+        ({systemOwner, trueOwner, keysManager, validatorsManager}  = await deployTestContracts());
     });
 
     it('getValidators', async () => {
@@ -48,7 +48,7 @@ contract('validatorsManager [all features]', function(accounts) {
         await keysManager.createKeys(keys1.mining, keys1.payout, keys1.voting, {from: accounts[0]});
         await keysManager.addInitialKey(accounts[4], {from: systemOwner});
         await keysManager.createKeys(keys2.mining, keys2.payout, keys2.voting, {from: accounts[4]});
-        [keys1.mining, keys2.mining].should.be.deep.equal(
+        [trueOwner, keys1.mining, keys2.mining].should.be.deep.equal(
             await validatorsManager.getValidators()
         );
     });
