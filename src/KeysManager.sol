@@ -16,13 +16,20 @@ contract KeysManager is KeyClass, Owned {
     BallotsManager public ballotsManager;
     ValidatorsManager public validatorsManager;
 
-    function setBallotsManager(address addr) public onlyOwner {
-        require(msg.sender == BallotsManager(addr).owner());
+    function initialize(address ballotsManagerAddr, address validatorsManagerAddr) public onlyOwner {
+        require(msg.sender == BallotsManager(ballotsManagerAddr).owner());
+        require(msg.sender == ValidatorsManager(validatorsManagerAddr).owner());
+        setBallotsManager(ballotsManagerAddr);
+        setValidatorsManager(validatorsManagerAddr);
+    }
+
+    function setBallotsManager(address addr) internal {
+        require(address(ballotsManager) == 0x0);
         ballotsManager = BallotsManager(addr);
     }
 
-    function setValidatorsManager(address addr) public onlyOwner {
-        require(msg.sender == ValidatorsManager(addr).owner());
+    function setValidatorsManager(address addr) internal {
+        require(address(validatorsManager) == 0x0);
         validatorsManager = ValidatorsManager(addr);
     }
     
@@ -100,7 +107,6 @@ contract KeysManager is KeyClass, Owned {
     function setVotingKey(address _votingKey, bool _isActive) public {
         require(msg.sender == address(ballotsManager));
         votingKeys[_votingKey] = VotingKey({isActive: _isActive});
-
     }
 
     function setPayoutKey(address _payoutKey, bool _isActive) public {

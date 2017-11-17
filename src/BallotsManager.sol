@@ -12,13 +12,20 @@ contract BallotsManager is BallotClass, Utility, Owned {
     KeysManager public keysManager;
     ValidatorsManager public validatorsManager;
 
-    function setValidatorsManager(address addr) public onlyOwner {
-        require(msg.sender == ValidatorsManager(addr).owner());
+    function initialize(address keysManagerAddr, address validatorsManagerAddr) public onlyOwner {
+        require(msg.sender == ValidatorsManager(validatorsManagerAddr).owner());
+        require(msg.sender == KeysManager(keysManagerAddr).owner());
+        setKeysManager(keysManagerAddr);
+        setValidatorsManager(validatorsManagerAddr);
+    }
+
+    function setValidatorsManager(address addr) internal {
+        require(address(validatorsManager) == 0x0);
         validatorsManager = ValidatorsManager(addr);
     }
 
-    function setKeysManager(address addr) public onlyOwner {
-        require(msg.sender == KeysManager(addr).owner());
+    function setKeysManager(address addr) internal {
+        require(address(keysManager) == 0x0);
         keysManager = KeysManager(addr);
     }
 

@@ -17,12 +17,24 @@ contract ValidatorsManager is ValidatorClass, Owned, Utility {
         InitiateChange(Utility.getLastBlockHash(), validators);
     }
 
+    function initialize(address ballotsManagerAddr, address keysManagerAddr) public onlyOwner {
+        require(address(ballotsManager) == 0x0);
+        require(address(keysManager) == 0x0);
+        require(msg.sender == BallotsManager(ballotsManagerAddr).owner());
+        require(msg.sender == KeysManager(keysManagerAddr).owner());
+
+        ballotsManager = BallotsManager(ballotsManagerAddr);
+        keysManager = KeysManager(keysManagerAddr);
+    }
+
     function setBallotsManager(address addr) public onlyOwner {
+        require(address(ballotsManager) == 0x0);
         require(msg.sender == BallotsManager(addr).owner());
         ballotsManager = BallotsManager(addr);
     }
 
     function setKeysManager(address addr) public onlyOwner {
+        require(address(keysManager) == 0x0);
         require(msg.sender == KeysManager(addr).owner());
         keysManager = KeysManager(addr);
     }
