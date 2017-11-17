@@ -9,32 +9,32 @@ let {addressFromNumber} = require('./util/ether.js');
 
 let {deployTestContracts} = require('./util/deploy.js');
 
-contract('keysManager [all features]', function(accounts) {
-    let {systemOwner, keysManager, validatorsManager} = {};
+contract('keysStorage [all features]', function(accounts) {
+    let {systemOwner, keysStorage, keysManager, validatorsStorage} = {};
 
     beforeEach(async () => {
-        ({systemOwner, keysManager, validatorsManager}  = await deployTestContracts());
+        ({systemOwner, keysStorage, keysManager, validatorsStorage}  = await deployTestContracts());
     });
 
     it('method addInitialKey is avail for admin', async () => {
-        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
         big(1).should.be.bignumber.equal(
-            await keysManager.getInitialKeysIssued.call()
+            await keysStorage.getInitialKeysIssued.call()
         );
     });
 
     it('initialKeysIssued affected by addInitialKey', async () => {
         big(0).should.be.bignumber.equal(
-            await keysManager.getInitialKeysIssued.call()
+            await keysStorage.getInitialKeysIssued.call()
         );
-        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
         big(1).should.be.bignumber.equal(
-            await keysManager.getInitialKeysIssued.call()
+            await keysStorage.getInitialKeysIssued.call()
         );
     });
 
     it('method addInitialKey is restricted for non-admin', async () => {
-        await keysManager.addInitialKey(accounts[1], {from: accounts[0]})
+        await keysStorage.addInitialKey(accounts[1], {from: accounts[0]})
             .should.be.rejectedWith('transaction: revert');
     });
 
@@ -43,94 +43,94 @@ contract('keysManager [all features]', function(accounts) {
         let initialKeysLimit = await keysManager.initialKeysLimit.call();
         while(idx < initialKeysLimit) {
             let addr = addressFromNumber(idx);//sprintf('0x%040x' % idx);
-            await keysManager.addInitialKey(addr, {from: systemOwner});
+            await keysStorage.addInitialKey(addr, {from: systemOwner});
             idx++;
         }
         let addr = addressFromNumber(idx);//sprintf('0x%040x' % idx);
-        await keysManager.addInitialKey(addr, {from: systemOwner})
+        await keysStorage.addInitialKey(addr, {from: systemOwner})
             .should.be.rejectedWith('invalid opcode');
     });
 
     it('addInitialKey changes initialKeys structure', async () => {
-        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
         true.should.be.equal(
-            await keysManager.initialKeys(accounts[1])
+            await keysStorage.initialKeys(accounts[1])
         );
         false.should.be.equal(
-            await keysManager.initialKeys(accounts[2])
+            await keysStorage.initialKeys(accounts[2])
         );
     });
 
     it('checkInitialKey', async () => {
         false.should.be.equal(
-            await keysManager.checkInitialKey.call(accounts[1])
+            await keysStorage.checkInitialKey.call(accounts[1])
         );
-        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
         true.should.be.equal(
-            await keysManager.checkInitialKey.call(accounts[1])
+            await keysStorage.checkInitialKey.call(accounts[1])
         );
     });
 
     it('initial key is invalidated after being used in createKeys', async () => {
-        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
-        await keysManager.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]});
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
+        await keysStorage.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]});
         false.should.be.equal(
-            await keysManager.checkInitialKey.call(accounts[1])
+            await keysStorage.checkInitialKey.call(accounts[1])
         );
     });
 
     it('createKeys fails for invalid initial key', async () => {
-        await keysManager.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]})
+        await keysStorage.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]})
             .should.be.rejectedWith('invalid opcode');
     });
 
     it('createKeys fails for used initial key', async () => {
-        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
-        await keysManager.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]});
-        await keysManager.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]})
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
+        await keysStorage.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]});
+        await keysStorage.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]})
             .should.be.rejectedWith('invalid opcode');
     });
 
     it('licensesIssued is incremented by createKeys', async () => {
         big(0).should.be.bignumber.equal(
-            await keysManager.getLicensesIssued()
+            await keysStorage.getLicensesIssued()
         );
-        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
-        await keysManager.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]});
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
+        await keysStorage.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]});
         big(1).should.be.bignumber.equal(
-            await keysManager.getLicensesIssued()
+            await keysStorage.getLicensesIssued()
         );
     });
 
     it('initialKeysInvalidated is incremented by createKeys', async () => {
         big(0).should.be.bignumber.equal(
-            await keysManager.getInitialKeysInvalidated()
+            await keysStorage.getInitialKeysInvalidated()
         );
-        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
-        await keysManager.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]});
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
+        await keysStorage.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]});
         big(1).should.be.bignumber.equal(
-            await keysManager.getInitialKeysInvalidated()
+            await keysStorage.getInitialKeysInvalidated()
         );
     });
 
-    it('createKeys modifies keysManager state', async() => {
+    it('createKeys modifies keysStorage state', async() => {
         let miningKey = addressFromNumber(1);
         let payoutKey = addressFromNumber(2);
         let votingKey = addressFromNumber(3);
-        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
-        res = await keysManager.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
-        let i = await keysManager.miningKeys(miningKey)
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
+        res = await keysStorage.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
+        let i = await keysStorage.miningKeys(miningKey)
         true.should.be.equal(
-            await keysManager.miningKeys(miningKey)
+            await keysStorage.miningKeys(miningKey)
         );
         true.should.be.equal(
-            await keysManager.payoutKeys(payoutKey)
+            await keysStorage.payoutKeys(payoutKey)
         );
         true.should.be.equal(
-            await keysManager.votingKeys(votingKey)
+            await keysStorage.votingKeys(votingKey)
         );
         miningKey.should.be.equal(
-            await validatorsManager.validators(1)
+            await validatorsStorage.validators(1)
         );
     });
 
@@ -138,8 +138,8 @@ contract('keysManager [all features]', function(accounts) {
         let miningKey = addressFromNumber(1);
         let payoutKey = addressFromNumber(2);
         let votingKey = addressFromNumber(3);
-        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
-        res = await keysManager.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
+        res = await keysStorage.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
         'InitiateChange'.should.be.equal(res.logs[0].event);
         [miningKey].should.be.deep.equal(
             res.logs[0].args['_new_set']
@@ -154,13 +154,13 @@ contract('keysManager [all features]', function(accounts) {
         let miningKey = addressFromNumber(1);
         let payoutKey = addressFromNumber(2);
         let votingKey = addressFromNumber(3);
-        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
-        res = await keysManager.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
+        res = await keysStorage.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
         true.should.be.equal(
-            await keysManager.checkPayoutKeyValidity(payoutKey)
+            await keysStorage.checkPayoutKeyValidity(payoutKey)
         );
         false.should.be.equal(
-            await keysManager.checkPayoutKeyValidity(votingKey)
+            await keysStorage.checkPayoutKeyValidity(votingKey)
         );
     });
 
@@ -168,19 +168,19 @@ contract('keysManager [all features]', function(accounts) {
         let miningKey = addressFromNumber(1);
         let payoutKey = addressFromNumber(2);
         let votingKey = addressFromNumber(3);
-        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
-        res = await keysManager.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
+        res = await keysStorage.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
         true.should.be.equal(
-            await keysManager.checkVotingKeyValidity(votingKey)
+            await keysStorage.checkVotingKeyValidity(votingKey)
         );
         false.should.be.equal(
-            await keysManager.checkVotingKeyValidity(payoutKey)
+            await keysStorage.checkVotingKeyValidity(payoutKey)
         );
     });
 
     it('addInitialKey fails to add same key twice', async () => {
-        await keysManager.addInitialKey(accounts[1], {from: systemOwner});
-        await keysManager.addInitialKey(accounts[1], {from: systemOwner})
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner})
             .should.be.rejectedWith('invalid opcode');
     });
 

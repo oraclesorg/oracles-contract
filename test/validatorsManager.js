@@ -11,7 +11,7 @@ let util = require('util');
 let {deployTestContracts} = require('./util/deploy.js');
 
 contract('validatorsManager [all features]', function(accounts) {
-    let {systemOwner, trueOwner, keysManager, validatorsManager} = {};
+    let {systemOwner, trueOwner, keysStorage, validatorsStorage, validatorsManager} = {};
     let keys1 = {
         mining: accounts[1],
         payout: accounts[2],
@@ -40,21 +40,21 @@ contract('validatorsManager [all features]', function(accounts) {
     };
 
     beforeEach(async () => {
-        ({systemOwner, trueOwner, keysManager, validatorsManager}  = await deployTestContracts());
+        ({systemOwner, trueOwner, keysStorage, validatorsStorage, validatorsManager}  = await deployTestContracts());
     });
 
     it('getValidators', async () => {
-        await keysManager.addInitialKey(accounts[0], {from: systemOwner});
-        await keysManager.createKeys(keys1.mining, keys1.payout, keys1.voting, {from: accounts[0]});
-        await keysManager.addInitialKey(accounts[4], {from: systemOwner});
-        await keysManager.createKeys(keys2.mining, keys2.payout, keys2.voting, {from: accounts[4]});
+        await keysStorage.addInitialKey(accounts[0], {from: systemOwner});
+        await keysStorage.createKeys(keys1.mining, keys1.payout, keys1.voting, {from: accounts[0]});
+        await keysStorage.addInitialKey(accounts[4], {from: systemOwner});
+        await keysStorage.createKeys(keys2.mining, keys2.payout, keys2.voting, {from: accounts[4]});
         [trueOwner, keys1.mining, keys2.mining].should.be.deep.equal(
-            await validatorsManager.getValidators()
+            await validatorsStorage.getValidators()
         );
     });
 
     it('upsertValidatorFromGovernance [update own data with voting key]', async () => {
-        await keysManager.addInitialKey(accounts[0], {from: systemOwner});
+        await keysStorage.addInitialKey(accounts[0], {from: systemOwner});
         await validatorsManager.insertValidatorFromCeremony(
             keys1.mining,
             data1.zip,
@@ -65,7 +65,7 @@ contract('validatorsManager [all features]', function(accounts) {
             data1.state,
             {from: accounts[0]}
         );
-        await keysManager.createKeys(keys1.mining, keys1.payout, keys1.voting, {from: accounts[0]});
+        await keysStorage.createKeys(keys1.mining, keys1.payout, keys1.voting, {from: accounts[0]});
         await validatorsManager.upsertValidatorFromGovernance(
             keys1.mining,
             data1.zip,
@@ -80,15 +80,15 @@ contract('validatorsManager [all features]', function(accounts) {
             data1.fullName, 'NEW STREET', data1.state, big(data1.zip),
             data1.licenseID, big(data1.licenseExpiredAt), big(0), ""
         ].should.be.deep.equal(
-            await validatorsManager.validator(keys1.mining)
+            await validatorsStorage.validator(keys1.mining)
         );
 
     });
 
     it('insertValidatorFromCeremony [add data with initial key]', async () => {
-        await keysManager.addInitialKey(accounts[0], {from: systemOwner});
+        await keysStorage.addInitialKey(accounts[0], {from: systemOwner});
         "".should.be.equal(
-            (await validatorsManager.validator(keys1.mining))[0]
+            (await validatorsStorage.validator(keys1.mining))[0]
         );
         await validatorsManager.insertValidatorFromCeremony(
             keys1.mining,
@@ -104,12 +104,12 @@ contract('validatorsManager [all features]', function(accounts) {
             data1.fullName, data1.streetName, data1.state, big(data1.zip),
             data1.licenseID, big(data1.licenseExpiredAt), big(0), ""
         ].should.be.deep.equal(
-            await validatorsManager.validator(keys1.mining)
+            await validatorsStorage.validator(keys1.mining)
         );
     });
 
     it('insertValidatorFromCeremony [fails to rewrite existing data with initial key]', async () => {
-        await keysManager.addInitialKey(accounts[0], {from: systemOwner});
+        await keysStorage.addInitialKey(accounts[0], {from: systemOwner});
         await validatorsManager.insertValidatorFromCeremony(
             keys1.mining,
             data1.zip,
@@ -120,7 +120,7 @@ contract('validatorsManager [all features]', function(accounts) {
             data1.state,
             {from: accounts[0]}
         );
-        await keysManager.addInitialKey(accounts[4], {from: systemOwner});
+        await keysStorage.addInitialKey(accounts[4], {from: systemOwner});
         await validatorsManager.insertValidatorFromCeremony(
                 keys1.mining,
                 data1.zip,
@@ -134,7 +134,7 @@ contract('validatorsManager [all features]', function(accounts) {
     });
 
     it('upsertValidatorFromGovernance [add new data with voting key]', async () => {
-        await keysManager.addInitialKey(accounts[0], {from: systemOwner});
+        await keysStorage.addInitialKey(accounts[0], {from: systemOwner});
         await validatorsManager.insertValidatorFromCeremony(
             keys1.mining,
             data1.zip,
@@ -145,7 +145,7 @@ contract('validatorsManager [all features]', function(accounts) {
             data1.state,
             {from: accounts[0]}
         );
-        await keysManager.createKeys(keys1.mining, keys1.payout, keys1.voting, {from: accounts[0]});
+        await keysStorage.createKeys(keys1.mining, keys1.payout, keys1.voting, {from: accounts[0]});
         await validatorsManager.upsertValidatorFromGovernance(
             keys2.mining,
             data2.zip,
@@ -160,13 +160,13 @@ contract('validatorsManager [all features]', function(accounts) {
             data2.fullName, data2.streetName, data2.state, big(data2.zip),
             data2.licenseID, big(data2.licenseExpiredAt), big(0), ""
         ].should.be.deep.equal(
-            await validatorsManager.validator(keys2.mining)
+            await validatorsStorage.validator(keys2.mining)
         );
 
     });
 
     it('getValidator* methods', async () => {
-        await keysManager.addInitialKey(accounts[0], {from: systemOwner});
+        await keysStorage.addInitialKey(accounts[0], {from: systemOwner});
         await validatorsManager.insertValidatorFromCeremony(
             keys1.mining,
             data1.zip,
@@ -178,25 +178,25 @@ contract('validatorsManager [all features]', function(accounts) {
             {from: accounts[0]}
         );
         data1.zip.should.be.bignumber.equal(
-            await validatorsManager.getValidatorZip.call(keys1.mining)
+            await validatorsStorage.getValidatorZip.call(keys1.mining)
         );
         data1.licenseExpiredAt.should.be.bignumber.equal(
-            await validatorsManager.getValidatorLicenseExpiredAt.call(keys1.mining)
+            await validatorsStorage.getValidatorLicenseExpiredAt.call(keys1.mining)
         );
         data1.licenseID.should.be.equal(
-            await validatorsManager.getValidatorLicenseID.call(keys1.mining)
+            await validatorsStorage.getValidatorLicenseID.call(keys1.mining)
         );
         data1.fullName.should.be.equal(
-            await validatorsManager.getValidatorFullName.call(keys1.mining)
+            await validatorsStorage.getValidatorFullName.call(keys1.mining)
         );
         data1.streetName.should.be.equal(
-            await validatorsManager.getValidatorStreetName.call(keys1.mining)
+            await validatorsStorage.getValidatorStreetName.call(keys1.mining)
         );
         data1.state.should.be.equal(
-            await validatorsManager.getValidatorState.call(keys1.mining)
+            await validatorsStorage.getValidatorState.call(keys1.mining)
         );
         big(0).should.be.bignumber.equal(
-            await validatorsManager.getValidatorDisablingDate.call(keys1.mining)
+            await validatorsStorage.getValidatorDisablingDate.call(keys1.mining)
         );
     });
 

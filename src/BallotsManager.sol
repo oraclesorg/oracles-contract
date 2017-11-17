@@ -4,24 +4,43 @@ import "./Owned.sol";
 import "./Utility.sol";
 import "oracles-contract-ballot/BallotClass.sol";
 import "./KeysManager.sol";
+import "./ValidatorsStorage.sol";
 import "./ValidatorsManager.sol";
 
 
 contract BallotsManager is BallotClass, Utility, Owned {
 
+    KeysStorage public keysStorage;
     KeysManager public keysManager;
+    ValidatorsStorage public validatorsStorage;
     ValidatorsManager public validatorsManager;
 
-    function initialize(address keysManagerAddr, address validatorsManagerAddr) public onlyOwner {
+    function initialize(address keysStorageAddr, address keysManagerAddr, address validatorsStorageAddr, address validatorsManagerAddr) public onlyOwner {
+        require(msg.sender == ValidatorsStorage(validatorsStorageAddr).owner());
         require(msg.sender == ValidatorsManager(validatorsManagerAddr).owner());
+        require(msg.sender == KeysStorage(keysStorageAddr).owner());
         require(msg.sender == KeysManager(keysManagerAddr).owner());
+
+        setKeysStorage(keysStorageAddr);
         setKeysManager(keysManagerAddr);
+        setValidatorsStorage(validatorsStorageAddr);
         setValidatorsManager(validatorsManagerAddr);
+    }
+
+    function setValidatorsStorage(address addr) internal {
+        require(address(validatorsStorage) == 0x0);
+        validatorsStorage = ValidatorsStorage(addr);
     }
 
     function setValidatorsManager(address addr) internal {
         require(address(validatorsManager) == 0x0);
         validatorsManager = ValidatorsManager(addr);
+    }
+
+    function setKeysStorage(address addr) public onlyOwner {
+        require(address(keysStorage) == 0x0);
+        require(msg.sender == KeysStorage(addr).owner());
+        keysStorage = KeysStorage(addr);
     }
 
     function setKeysManager(address addr) internal {
@@ -50,30 +69,30 @@ contract BallotsManager is BallotClass, Utility, Owned {
         bool addAction,
         string memo
     ) public {
-        assert(keysManager.checkVotingKeyValidity(msg.sender));
-        assert(!(keysManager.licensesIssued() == keysManager.licensesLimit() && addAction));
+        assert(keysStorage.checkVotingKeyValidity(msg.sender));
+        assert(!(keysStorage.licensesIssued() == keysManager.licensesLimit() && addAction));
         assert(ballotsMapping[ballotID].createdAt <= 0);
         if (affectedKeyType == 0) {//mining key
             bool validatorIsAdded = false;
-            uint validatorLength = validatorsManager.getValidatorsLength();
+            uint validatorLength = validatorsStorage.getValidatorsLength();
             for (uint i = 0; i < validatorLength; i++) {
-                assert(!(validatorsManager.getValidatorAtPosition(i) == affectedKey && addAction)); //validator is already added before
-                if (validatorsManager.getValidatorAtPosition(i) == affectedKey) {
+                assert(!(validatorsStorage.getValidatorAtPosition(i) == affectedKey && addAction)); //validator is already added before
+                if (validatorsStorage.getValidatorAtPosition(i) == affectedKey) {
                     validatorIsAdded = true;
                     break;
                 }
             }
-            uint disabledValidatorsLength = validatorsManager.getDisabledValidatorsLength();
+            uint disabledValidatorsLength = validatorsStorage.getDisabledValidatorsLength();
             for (uint j = 0; j < disabledValidatorsLength; j++) {
-                assert(validatorsManager.getDisabledValidatorAtPosition(j) != affectedKey); //validator is already removed before
+                assert(validatorsStorage.getDisabledValidatorAtPosition(j) != affectedKey); //validator is already removed before
             }
             assert(!(!validatorIsAdded && !addAction)); // no such validator in validators array to remove it
         } else if (affectedKeyType == 1) {//voting key
-            assert(!(keysManager.checkVotingKeyValidity(affectedKey) && addAction)); //voting key is already added before
-            assert(!(!keysManager.checkVotingKeyValidity(affectedKey) && !addAction)); //no such voting key to remove it
+            assert(!(keysStorage.checkVotingKeyValidity(affectedKey) && addAction)); //voting key is already added before
+            assert(!(!keysStorage.checkVotingKeyValidity(affectedKey) && !addAction)); //no such voting key to remove it
         } else if (affectedKeyType == 2) {//payout key
-            assert(!(keysManager.checkPayoutKeyValidity(affectedKey) && addAction)); //payout key is already added before
-            assert(!(!keysManager.checkPayoutKeyValidity(affectedKey) && !addAction)); //no such payout key to remove it
+            assert(!(keysStorage.checkPayoutKeyValidity(affectedKey) && addAction)); //payout key is already added before
+            assert(!(!keysStorage.checkPayoutKeyValidity(affectedKey) && !addAction)); //no such payout key to remove it
         }
         addBallotInternal(ballotID, owner, miningKey, affectedKey, affectedKeyType, duration, addAction, memo);
     }
@@ -166,7 +185,7 @@ contract BallotsManager is BallotClass, Utility, Owned {
     */
     function getBallotOwner(uint ballotID) public view returns (address value) {
         address ballotOwnerVotingKey = ballotsMapping[ballotID].owner;
-        address ballotOwnerMiningKey = keysManager.votingMiningKeysPair(ballotOwnerVotingKey);
+        address ballotOwnerMiningKey = keysStorage.votingMiningKeysPair(ballotOwnerVotingKey);
         return ballotOwnerMiningKey;
     }
     
@@ -239,7 +258,7 @@ contract BallotsManager is BallotClass, Utility, Owned {
     @param accept Vote for is true, vote against is false
     */
     function vote(uint ballotID, bool accept) public {
-        assert(keysManager.checkVotingKeyValidity(msg.sender));
+        assert(keysStorage.checkVotingKeyValidity(msg.sender));
         Ballot storage v =  ballotsMapping[ballotID];
         assert(v.votingDeadline >= now);
         assert(!v.voted[msg.sender]);
@@ -257,7 +276,7 @@ contract BallotsManager is BallotClass, Utility, Owned {
     @dev Finalizes ballot
     */
     function finalizeBallot(uint ballotID) public {
-        assert(keysManager.checkVotingKeyValidity(msg.sender));
+        assert(keysStorage.checkVotingKeyValidity(msg.sender));
         if (!finalizeBallotInternal(ballotsMapping[ballotID])) {
             checkBallotsActivity();
         }
@@ -293,33 +312,33 @@ contract BallotsManager is BallotClass, Utility, Owned {
 
     function checkBallotsActivityPostActionAdd(Ballot b) internal {
         if (b.affectedKeyType == 0) {//mining key
-            if (keysManager.licensesIssued() < keysManager.licensesLimit()) {
-                keysManager.increaseLicenses();
-                validatorsManager.addValidator(b.affectedKey);
+            if (keysStorage.licensesIssued() < keysManager.licensesLimit()) {
+                keysStorage.increaseLicenses();
+                validatorsStorage.addValidator(b.affectedKey);
             }
         } else if (b.affectedKeyType == 1) {//voting key
-            keysManager.setVotingKey(b.affectedKey, true);
-            keysManager.setVotingMiningKeysPair(b.affectedKey, b.miningKey);
+            keysStorage.setVotingKey(b.affectedKey, true);
+            keysStorage.setVotingMiningKeysPair(b.affectedKey, b.miningKey);
         } else if (b.affectedKeyType == 2) {//payout key
-            keysManager.setPayoutKey(b.affectedKey, true);
-            keysManager.setMiningPayoutKeysPair(b.miningKey, b.affectedKey);
+            keysStorage.setPayoutKey(b.affectedKey, true);
+            keysStorage.setMiningPayoutKeysPair(b.miningKey, b.affectedKey);
         }
     }
 
     function checkBallotsActivityPostActionRemove(Ballot b) internal {
         if (b.affectedKeyType == 0) {//mining key
-            uint validatorLength = validatorsManager.getValidatorsLength();
+            uint validatorLength = validatorsStorage.getValidatorsLength();
             for (uint jj = 0; jj < validatorLength; jj++) {
-                if (validatorsManager.getValidatorAtPosition(jj) == b.affectedKey) {
-                    validatorsManager.removeValidator(jj); 
+                if (validatorsStorage.getValidatorAtPosition(jj) == b.affectedKey) {
+                    validatorsStorage.removeValidator(jj); 
                     return;
                 }
             }
-            validatorsManager.disableValidator(b.affectedKey);
+            validatorsStorage.disableValidator(b.affectedKey);
         } else if (b.affectedKeyType == 1) {//voting key
-            keysManager.setVotingKey(b.affectedKey, false);
+            keysStorage.setVotingKey(b.affectedKey, false);
         } else if (b.affectedKeyType == 2) {//payout key
-            keysManager.setPayoutKey(b.affectedKey, false);
+            keysStorage.setPayoutKey(b.affectedKey, false);
         }
     }
 }
