@@ -27,6 +27,14 @@ These are contracts for storing and managing the data for validators.
 | 6 | Validator's personal data addition is forbidden for invalid voting key from governance    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
 | 7 | Validator's personal data addition is forbidden for the same valid voting key from governance twice    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
 | 8 | Validator's personal data addition is forbidden from governance, if counter of validators, added from governance, reached the limit    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 9 | Mining key is added to validators' array after generation of new production keys   | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 10 | Personal data: output zip code is equal to input zip code and it is a bignumber   | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 11 | Personal data: output licenseExpiredAt is equal to input licenseExpiredAt and it is a bignumber   | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 12 | Personal data: output licenseID is equal to input licenseID   | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 13 | Personal data: output fullname is equal to input fullname   | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 14 | Personal data: output streetname is equal to input streetname   | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 15 | Personal data: output state is equal to input state   | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 16 | Personal data: output sisablingDate is empty   | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
 
 ### [KeysStorage](https://github.com/oraclesorg/oracles-contract/blob/master/src/KeysStorage.sol) and [KeysManager](https://github.com/oraclesorg/oracles-contract/blob/master/src/KeysManager.sol) contracts.
 
