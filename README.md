@@ -10,11 +10,11 @@ Ethereum smart contracts to manage validators in Oracles POA Network
 
 ## Oracles POA Network contracts features checklist
 
-### `ValidatorsStorage` and `ValidatorsManager` contracts.
+### [ValidatorsStorage](https://github.com/oraclesorg/oracles-contract/blob/master/src/ValidatorsStorage.sol) and [ValidatorsManager](https://github.com/oraclesorg/oracles-contract/blob/master/src/ValidatorsManager.sol) contracts.
 
 These are contracts for storing and managing the data for validators.
 
-### `KeysStorage` and `KeysManager` contracts.
+### [KeysStorage](https://github.com/oraclesorg/oracles-contract/blob/master/src/KeysStorage.sol) and [KeysManager](https://github.com/oraclesorg/oracles-contract/blob/master/src/KeysManager.sol) contracts.
 
 These are contracts for storing and managing the data for [Oracles POA Network Keys Generation dApp](https://github.com/oraclesorg/oracles-dapps-keys-generation).
 
@@ -32,7 +32,7 @@ These are contracts for storing and managing the data for [Oracles POA Network K
 | 10 | Mining, voting and payout keys are generated after execution `createKeys`  function, and they are valid     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
 | 11 | Initial key is invalidated immediately after mining/payout/voting keys are created     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
 
-### `BallotsStorage` and `BallotsManager` contracts.
+### [BallotsStorage](https://github.com/oraclesorg/oracles-contract/blob/master/src/BallotsStorage.sol) and [BallotsManager](https://github.com/oraclesorg/oracles-contract/blob/master/src/BallotsManager.sol) contracts.
 
 These are contracts for storing and managing the data for [Oracles POA Network Governance dApp](https://github.com/oraclesorg/oracles-dapps-voting).
 
