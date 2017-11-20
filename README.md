@@ -14,6 +14,13 @@ Ethereum smart contracts to manage validators in Oracles POA Network
 
 These are contracts for storing and managing the data for validators.
 
+| № | Description                                             | Status |
+|---|:-----------------------------------------------------|:--------------------------:|
+| 1 | Validator's personal data addition is available for valid initial key from ceremony     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 2 | Validator's personal data addition is forbidden for invalid initial key from ceremony    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 3 | Validator's personal data addition is forbidden for the same valid initial key from ceremony twice    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 4 | Validator's personal data addition is forbidden from ceremony, if initial keys invalidation counter is reached the limit from ceremony    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+
 ### [KeysStorage](https://github.com/oraclesorg/oracles-contract/blob/master/src/KeysStorage.sol) and [KeysManager](https://github.com/oraclesorg/oracles-contract/blob/master/src/KeysManager.sol) contracts.
 
 These are contracts for storing and managing the data for [Oracles POA Network Keys Generation dApp](https://github.com/oraclesorg/oracles-dapps-keys-generation).

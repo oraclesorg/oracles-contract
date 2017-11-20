@@ -64,7 +64,7 @@ contract ValidatorsManager is Owned {
     ) public {
         assert(keysStorage.checkInitialKey(msg.sender));
         assert(!validatorsStorage.isMiningKeyDataExists(miningKey));
-        assert(keysStorage.initialKeysInvalidated() < keysManager.licensesLimit());
+        assert(keysStorage.initialKeysInvalidated() < keysManager.initialKeysLimit());
 
         validatorsStorage.setValidator(miningKey, fullName, streetName, state, zip, licenseID, licenseExpiredAt, 0, "");
     }
