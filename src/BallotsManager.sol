@@ -135,6 +135,7 @@ contract BallotsManager is Owned {
         } else if (affectedKeyType == 1) {//voting key
             keysStorage.setVotingKey(affectedKey, true);
             keysStorage.setVotingMiningKeysPair(affectedKey, miningKey);
+            keysStorage.setMiningVotingKeysPair(miningKey, affectedKey);
         } else if (affectedKeyType == 2) {//payout key
             keysStorage.setPayoutKey(affectedKey, true);
             keysStorage.setMiningPayoutKeysPair(miningKey, affectedKey);
@@ -144,6 +145,7 @@ contract BallotsManager is Owned {
     function checkBallotsActivityPostActionRemove(uint ballotID) public {
         require(msg.sender == address(ballotsStorage));
         address affectedKey = ballotsStorage.getBallotAffectedKey(ballotID);
+        address miningKey = ballotsStorage.getBallotMiningKey(ballotID);
         uint affectedKeyType = ballotsStorage.getBallotAffectedKeyType(ballotID);
         if (affectedKeyType == 0) {//mining key
             uint validatorLength = validatorsStorage.getValidatorsLength();
@@ -156,8 +158,11 @@ contract BallotsManager is Owned {
             validatorsStorage.disableValidator(affectedKey);
         } else if (affectedKeyType == 1) {//voting key
             keysStorage.setVotingKey(affectedKey, false);
+            keysStorage.setVotingMiningKeysPair(0x0, miningKey);
+            keysStorage.setMiningVotingKeysPair(miningKey, 0x0);
         } else if (affectedKeyType == 2) {//payout key
             keysStorage.setPayoutKey(affectedKey, false);
+            keysStorage.setMiningPayoutKeysPair(miningKey, 0x0);
         }
     }
 }

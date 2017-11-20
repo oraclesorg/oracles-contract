@@ -26,13 +26,18 @@ contract KeysStorage is Owned {
     struct VotingKey {
         bool isActive;
     }
+
+    struct SecondaryKeys {
+        address votingKey;
+        address payoutKey;
+    }
     
     mapping(address => MiningKey) public miningKeys;
     mapping(address => PayoutKey) public payoutKeys;
     mapping(address => VotingKey) public votingKeys;
     mapping(address => InitialKey) public initialKeys;
     mapping(address => address) public votingMiningKeysPair;
-    mapping(address => address) public miningPayoutKeysPair;
+    mapping(address => SecondaryKeys) public miningToSecondaryKeys;
 
     KeysManager public keysManager;
     BallotsManager public ballotsManager;
@@ -104,7 +109,7 @@ contract KeysStorage is Owned {
         //add mining key to list of validators
         validatorsStorage.addValidator(miningAddr);
         votingMiningKeysPair[votingAddr] = miningAddr;
-        miningPayoutKeysPair[miningAddr] = payoutAddr;
+        miningToSecondaryKeys[miningAddr] = SecondaryKeys({votingKey: votingAddr, payoutKey: payoutAddr});
     }
 
     /**
@@ -162,11 +167,20 @@ contract KeysStorage is Owned {
 
     function setMiningPayoutKeysPair(address miningKey, address payoutKey) public {
         require(msg.sender == address(ballotsManager));
-        miningPayoutKeysPair[miningKey] = payoutKey;
+        miningToSecondaryKeys[miningKey] = SecondaryKeys({votingKey: miningToSecondaryKeys[miningKey].votingKey, payoutKey: payoutKey});
+    }
+
+    function setMiningVotingKeysPair(address miningKey, address votingKey) public {
+        require(msg.sender == address(ballotsManager));
+        miningToSecondaryKeys[miningKey] = SecondaryKeys({votingKey: votingKey, payoutKey: miningToSecondaryKeys[miningKey].payoutKey});
+    }
+
+    function getVotingByMining(address miningKey) public view returns (address votingKey) {
+        return miningToSecondaryKeys[miningKey].votingKey;
     }
 
     function getPayoutByMining(address miningKey) public view returns (address payoutKey) {
-        return miningPayoutKeysPair[miningKey];
+        return miningToSecondaryKeys[miningKey].payoutKey;
     }
 
     function setVotingMiningKeysPair(address votingKey, address miningKey) public {
