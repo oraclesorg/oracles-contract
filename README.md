@@ -31,7 +31,6 @@ These are contracts for storing and managing the data for [Oracles POA Network K
 | 9 | Initial keys invalidation counter is incremented by generation of production keys     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
 | 10 | Mining, voting and payout keys are generated after execution `createKeys`  function, and they are valid     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
 | 11 | Initial key is invalidated immediately after mining/payout/voting keys are created     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 12 | Production keys generation is possible only with valid initial key     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
 
 ### `BallotsStorage` and `BallotsManager` contracts.
 

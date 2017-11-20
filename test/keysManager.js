@@ -156,6 +156,23 @@ contract('keysStorage [all features]', function(accounts) {
         );
     });*/
 
+    it('checkMiningKeyValidity', async () => {
+        let miningKey = addressFromNumber(1);
+        let payoutKey = addressFromNumber(2);
+        let votingKey = addressFromNumber(3);
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
+        res = await keysStorage.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
+        false.should.be.equal(
+            await keysStorage.checkMiningKeyValidity(payoutKey)
+        );
+        false.should.be.equal(
+            await keysStorage.checkMiningKeyValidity(votingKey)
+        );
+        true.should.be.equal(
+            await keysStorage.checkMiningKeyValidity(miningKey)
+        );
+    });
+
     it('checkPayoutKeyValidity', async () => {
         let miningKey = addressFromNumber(1);
         let payoutKey = addressFromNumber(2);
@@ -167,6 +184,9 @@ contract('keysStorage [all features]', function(accounts) {
         );
         false.should.be.equal(
             await keysStorage.checkPayoutKeyValidity(votingKey)
+        );
+        false.should.be.equal(
+            await keysStorage.checkPayoutKeyValidity(miningKey)
         );
     });
 
@@ -181,6 +201,9 @@ contract('keysStorage [all features]', function(accounts) {
         );
         false.should.be.equal(
             await keysStorage.checkVotingKeyValidity(payoutKey)
+        );
+        false.should.be.equal(
+            await keysStorage.checkVotingKeyValidity(miningKey)
         );
     });
 
