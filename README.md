@@ -20,8 +20,8 @@ These are contracts for storing and managing the data for [Oracles POA Network K
 
 | № | Description                                             | Status |
 |---|:-----------------------------------------------------|:--------------------------:|
-| 1 | Initial key adding is available for contract owner     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 2 | Initial key adding fails to add same key twice    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 1 | Initial key addition is available for contract owner     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 2 | Initial key addition fails to add same key twice    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
 | 3 | Initial key is valid after execution of `addInitialKey` function     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
 | 4 | Initial key generation is forbidden for non-owner of contract    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
 | 5 | It is allowed to add only limited number of initial keys (25)     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
@@ -29,9 +29,9 @@ These are contracts for storing and managing the data for [Oracles POA Network K
 | 7 | Production keys generation fails for used initial key     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
 | 8 | Licenses counter is incremented by generation of production keys     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
 | 9 | Initial keys invalidation counter is incremented by generation of production keys     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 10 | Mining, voting and payout keys are generated after execution `createKeys`  function and they are valid     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 10 | Mining, voting and payout keys are generated after execution `createKeys`  function, and they are valid     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
 | 11 | Initial key is invalidated immediately after mining/payout/voting keys are created     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 12 | Mining/payout/voting keys generation is possible only with valid initial key     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+| 12 | Production keys generation is possible only with valid initial key     | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
 
 ### `BallotsStorage` and `BallotsManager` contracts.
 

@@ -79,6 +79,12 @@ contract('keysStorage [all features]', function(accounts) {
         );
     });
 
+    it('addInitialKey fails to add same key twice', async () => {
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner})
+            .should.be.rejectedWith('invalid opcode');
+    });
+
     it('createKeys fails for invalid initial key', async () => {
         await keysStorage.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]})
             .should.be.rejectedWith('invalid opcode');
@@ -176,12 +182,6 @@ contract('keysStorage [all features]', function(accounts) {
         false.should.be.equal(
             await keysStorage.checkVotingKeyValidity(payoutKey)
         );
-    });
-
-    it('addInitialKey fails to add same key twice', async () => {
-        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
-        await keysStorage.addInitialKey(accounts[1], {from: systemOwner})
-            .should.be.rejectedWith('invalid opcode');
     });
 
 });
