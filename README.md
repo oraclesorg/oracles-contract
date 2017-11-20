@@ -1,6 +1,13 @@
 # Ethereum Oracles smart contract
 Ethereum Oracles smart contract to manage notaries in Oracles PoA
 
+- [Ethereum Oracles smart contract](#ethereum-oracles-smart-contract)
+  * [Common Oracles contract features checklist](#common-oracles-contract-features-checklist)
+  * [Known Ethereum contracts attack vectors checklist](#known-ethereum-contracts-attack-vectors-checklist)
+  * [Compiling of Oracles contract](#compiling-of-oracles-contract)
+  * [How to run tests](#how-to-run-tests)
+  * [Oracles contract definition](#oracles-contract-definition)
+
 ## Common Oracles contract features checklist
 | № | Description                                             | Status |
 |---|:-----------------------------------------------------|:--------------------------:|
