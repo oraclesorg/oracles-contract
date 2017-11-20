@@ -3,9 +3,9 @@ Ethereum smart contracts to manage validators in Oracles POA Network
 
 - [Oracles POA Network smart contracts](#oracles-poa-network-smart-contracts)
   * [Oracles POA Network contracts features checklist](#oracles-poa-network-contracts-features-checklist)
-    + [ValidatorsStorage and ValidatorsManager](#validatorsstorage-and-validatorsmanager)
-    + [KeysStorage and KeysManager](#keysstorage-and-keysmanager)
-    + [BallotsStorage and BallotsManager](#ballotsstorage-and-ballotsmanager)
+    + [ValidatorsStorage and ValidatorsManager contracts](#validatorsstorage-and-validatorsmanager-contracts)
+    + [KeysStorage and KeysManager contracts](#keysstorage-and-keysmanager-contracts)
+    + [BallotsStorage and BallotsManager contracts](#ballotsstorage-and-ballotsmanager-contracts)
   * [Known Ethereum contracts attack vectors checklist](#known-ethereum-contracts-attack-vectors-checklist)
   * [Compiling of Oracles contract](#compiling-of-oracles-contract)
   * [How to run tests](#how-to-run-tests)
