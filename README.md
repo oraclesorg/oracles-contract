@@ -57,18 +57,7 @@ These are contracts for storing and managing the data for [Oracles POA Network K
 
 These are contracts for storing and managing the data for [Oracles POA Network Governance dApp](https://github.com/oraclesorg/oracles-dapps-voting).
 
-| № | Description                                             | Status |
-|---|:-----------------------------------------------------|:--------------------------:|
-| 1 | Mining/payout/voting keys can be changed by owner anytime    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 2 | Ballot management is accessed only with valid voting key    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 3 | Ballot creation isn't possible, if limit of licenses distribution (52) is reached    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 4 | Ballot creation to add notary isn't possible, if notary is already added to PoA    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 5 | Ballot creation to add/remove notary isn't possible, if notary was removed from PoA before    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 6 | Voting is accessed only with valid voting key    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 7 | Voter is able to vote for the same ballot only once   | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 8 | Voting is prohibited after ballot's expiration    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 9 | Ballot is successfully finished, if total amount of voters >= 3    | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
-| 10 | If ballot is successfully finished, removing or adding of notary is started only if amount of votes for > amount of votes against   | ![good](https://cdn.rawgit.com/primer/octicons/62c672732695b6429678bcd321520c41af109475/build/svg/check.svg) |
+To be done...
 
 ## Known Ethereum contracts attack vectors checklist
 
