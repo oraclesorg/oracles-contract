@@ -8,7 +8,6 @@ import "./ValidatorsStorage.sol";
 
 
 contract BallotsManager is Owned {
-
     uint public votingLowerLimit = 3;
 
     BallotsStorage public ballotsStorage;
@@ -71,7 +70,7 @@ contract BallotsManager is Owned {
         string memo
     ) public {
         assert(keysStorage.checkVotingKeyValidity(msg.sender));
-        assert(!(keysStorage.licensesIssued() == keysManager.licensesLimit() && addAction));
+        assert(!(keysStorage.getLicensesIssuedFromGovernance() == keysManager.getLicensesLimitFromGovernance() && addAction));
         assert(ballotsStorage.ballotCreatedAt(ballotID) <= 0);
         if (affectedKeyType == 0) {//mining key
             bool validatorIsAdded = false;
@@ -127,8 +126,10 @@ contract BallotsManager is Owned {
         address affectedKey = ballotsStorage.getBallotAffectedKey(ballotID);
         address miningKey = ballotsStorage.getBallotMiningKey(ballotID);
         uint affectedKeyType = ballotsStorage.getBallotAffectedKeyType(ballotID);
+        uint licensesIssuedFromGovernance = keysStorage.getLicensesIssuedFromGovernance();
+        uint licensesLimitFromGovernance = keysManager.getLicensesLimitFromGovernance();
         if (affectedKeyType == 0) {//mining key
-            if (keysStorage.licensesIssued() < keysManager.licensesLimit()) {
+            if (licensesIssuedFromGovernance < licensesLimitFromGovernance) {
                 keysStorage.increaseLicenses();
                 validatorsStorage.addValidator(affectedKey);
             }

@@ -7,7 +7,6 @@ import "./KeysManager.sol";
 
 
 contract ValidatorsManager is Owned {
-
     ValidatorsStorage public validatorsStorage;
     KeysStorage public keysStorage;
     KeysManager public keysManager;
@@ -44,7 +43,7 @@ contract ValidatorsManager is Owned {
     }
 
     /**
-    @notice Adds new notary
+    @notice Adds new notary from ceremony
     @param miningKey Notary's mining key
     @param zip Notary's zip code
     @param licenseID Notary's license ID
@@ -70,7 +69,7 @@ contract ValidatorsManager is Owned {
     }
 
     /**
-    @notice Adds new notary
+    @notice Adds new/updates existing notary from governance
     @param miningKey Notary's mining key
     @param zip Notary's zip code
     @param licenseID Notary's license ID
@@ -89,9 +88,11 @@ contract ValidatorsManager is Owned {
         string state
     ) public {
         assert(keysStorage.checkVotingKeyValidity(msg.sender));
+        uint licensesIssuedFromGovernance = keysStorage.getLicensesIssuedFromGovernance();
+        uint licensesLimitFromGovernance = keysManager.getLicensesLimitFromGovernance();
         if (keysStorage.votingMiningKeysPair(msg.sender) != miningKey) {
             assert(!validatorsStorage.isMiningKeyDataExists(miningKey));
-            assert(keysStorage.licensesIssued() < keysManager.licensesLimit());
+            assert(licensesIssuedFromGovernance < licensesLimitFromGovernance);
         } else {
             assert(validatorsStorage.isMiningKeyDataExists(miningKey));
         }

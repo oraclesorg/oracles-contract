@@ -1,5 +1,6 @@
 pragma solidity 0.4.18;
 
+import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import "./Owned.sol";
 import "./KeysManager.sol";
 import "./ValidatorsStorage.sol";
@@ -7,6 +8,8 @@ import "./ValidatorsManager.sol";
 import "./BallotsManager.sol";
 
 contract KeysStorage is Owned {
+    using SafeMath for uint256;
+
     int8 public initialKeysIssued = 0;
     int8 public initialKeysInvalidated = 0;
     int8 public licensesIssued = 0;
@@ -190,5 +193,9 @@ contract KeysStorage is Owned {
 
     function getMiningByVoting(address votingKey) public view returns (address miningKey) {
         return votingMiningKeysPair[votingKey];
+    }
+
+    function getLicensesIssuedFromGovernance() public view returns (uint licensesIssuedFromGovernance) {
+        return SafeMath.sub(uint(licensesIssued), uint(initialKeysInvalidated));
     }
 }
