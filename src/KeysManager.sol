@@ -6,7 +6,7 @@ import "./Owned.sol";
 contract KeysManager is Owned {
 	using SafeMath for uint256;
 
-    int8 public initialKeysLimit = 25;
+    int8 public initialKeysLimit = 12;
     int8 public licensesLimit = 52;
 
     function getLicensesLimitFromGovernance() public view returns(uint licensesLimitFromGovernance) {
