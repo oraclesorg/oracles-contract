@@ -19,17 +19,17 @@ contract('keysStorage [all features]', function(accounts) {
     it('method addInitialKey is avail for admin', async () => {
         await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
         big(1).should.be.bignumber.equal(
-            await keysStorage.getInitialKeysIssued.call()
+            await keysStorage.initialKeysIssued()
         );
     });
 
     it('initialKeysIssued affected by addInitialKey', async () => {
         big(0).should.be.bignumber.equal(
-            await keysStorage.getInitialKeysIssued.call()
+            await keysStorage.initialKeysIssued()
         );
         await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
         big(1).should.be.bignumber.equal(
-            await keysStorage.getInitialKeysIssued.call()
+            await keysStorage.initialKeysIssued()
         );
     });
 
@@ -99,23 +99,23 @@ contract('keysStorage [all features]', function(accounts) {
 
     it('licensesIssued is incremented by createKeys', async () => {
         big(0).should.be.bignumber.equal(
-            await keysStorage.getLicensesIssued()
+            await keysStorage.licensesIssued()
         );
         await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
         await keysStorage.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]});
         big(1).should.be.bignumber.equal(
-            await keysStorage.getLicensesIssued()
+            await keysStorage.licensesIssued()
         );
     });
 
     it('initialKeysInvalidated is incremented by createKeys', async () => {
         big(0).should.be.bignumber.equal(
-            await keysStorage.getInitialKeysInvalidated()
+            await keysStorage.initialKeysInvalidated()
         );
         await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
         await keysStorage.createKeys(accounts[2], accounts[3], accounts[4], {from: accounts[1]});
         big(1).should.be.bignumber.equal(
-            await keysStorage.getInitialKeysInvalidated()
+            await keysStorage.initialKeysInvalidated()
         );
     });
 
