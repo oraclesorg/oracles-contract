@@ -18,11 +18,40 @@ async function deployTestContracts(accounts) {
     let ballotsStorage = await BallotsStorageProxy.new();
     let ballotsManager = await BallotsManagerProxy.new();
 
-    await validatorsStorage.initialize(validatorsManager.address, keysStorage.address, ballotsManager.address, {from: "0x338a7867A35367D120011B2DA1D8E2a8A60B9bC0"});
-    await keysStorage.initialize(keysManager.address, ballotsManager.address, validatorsStorage.address, validatorsManager.address, {from: "0x338a7867A35367D120011B2DA1D8E2a8A60B9bC0"})
-    await validatorsManager.initialize(validatorsStorage.address, keysStorage.address, keysManager.address, {from: "0x338a7867A35367D120011B2DA1D8E2a8A60B9bC0"});
-    await ballotsStorage.initialize(ballotsManager.address, keysStorage.address, {from: "0x338a7867A35367D120011B2DA1D8E2a8A60B9bC0"});
-    await ballotsManager.initialize(ballotsStorage.address, keysStorage.address, keysManager.address, validatorsStorage.address, {from: "0x338a7867A35367D120011B2DA1D8E2a8A60B9bC0"});
+    // keys
+    await keysStorage.initialize(
+        keysManager.address,
+        ballotsManager.address,
+        validatorsStorage.address,
+        validatorsManager.address,
+        {from: data.SYSTEM_OWNER_ADDRESS}
+    );
+    // validators
+    await validatorsStorage.initialize(
+        validatorsManager.address,
+        keysStorage.address,
+        ballotsManager.address,
+        {from: data.SYSTEM_OWNER_ADDRESS}
+    );
+    await validatorsManager.initialize(
+        validatorsStorage.address,
+        keysStorage.address,
+        keysManager.address,
+        {from: data.SYSTEM_OWNER_ADDRESS}
+    );
+    // ballots
+    await ballotsStorage.initialize(
+        ballotsManager.address,
+        keysStorage.address,
+        {from: data.SYSTEM_OWNER_ADDRESS}
+    );
+    await ballotsManager.initialize(
+        ballotsStorage.address,
+        keysStorage.address,
+        keysManager.address,
+        validatorsStorage.address,
+        {from: data.SYSTEM_OWNER_ADDRESS}
+    );
     
     return {
         systemOwner,
