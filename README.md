@@ -92,8 +92,5 @@ Expected result:
 
 ## How to run tests
 
-* First you need to create symlinks so solidity compiler be able to import contracts from
-    oraceles-contract-key, oracles-contract-validator and oracles-contract-ballot directories.
-    Just run `make symlinks` command or do it manually (see details in Makefile)
-* Then run testrpc with specifica accounts and balances. Use `make testrpc` command.
-* Now you can run tests with command `truffle test`.
+* Start testrpc process with specific accounts and balances. Use `make testrpc` command.
+* Run tests with command `truffle test`.

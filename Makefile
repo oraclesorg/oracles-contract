@@ -1,14 +1,7 @@
-.PHONY: symlinks merge testrpc test
-
-DIR=$(shell pwd -P)
-
-symlinks:
-	if [ ! -e $(DIR)/node_modules/oracles-contract-validator ]; then ln -s $(DIR)/lib/oracles-contract-validator/src $(DIR)/node_modules/oracles-contract-validator; fi;
-	if [ ! -e $(DIR)/node_modules/oracles-contract-key ]; then ln -s $(DIR)/lib/oracles-contract-key/src $(DIR)/node_modules/oracles-contract-key; fi;
-	if [ ! -e $(DIR)/node_modules/oracles-contract-ballot ]; then ln -s $(DIR)/lib/oracles-contract-ballot/src $(DIR)/node_modules/oracles-contract-ballot; fi;
+.PHONY: merge testrpc test
 
 merge:
-	node_modules/sol-merger/bin/sol-merger.js "src/*.sol" build
+	node_modules/.bin/sol-merger "src/*.sol" build
 
 testrpc:
 	node_modules/.bin/testrpc -p 8544 \
@@ -21,7 +14,7 @@ testrpc:
 		--account="0x1fdc76364db4a4bcfad8f2c010995a96fcb98a165e34858665a234ba54715104, 1000000000000000000000000000" \
 
 test:
-	truffle test
+	node_modules/.bin/truffle test
 
 solhint:
 	solhint contracts/*.sol contracts/util/*.sol
