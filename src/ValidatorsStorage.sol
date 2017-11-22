@@ -39,6 +39,11 @@ contract ValidatorsStorage is Owned, Utility {
     KeysStorage public keysStorage;
     BallotsManager public ballotsManager;
 
+    function ValidatorsStorage() public {
+        validators.push(owner);
+        InitiateChange(Utility.getLastBlockHash(), validators);
+    }
+
     function initialize(address validatorsManagerAddr, address keysStorageAddr, address ballotsManagerAddr) public onlyOwner {
         require(msg.sender == KeysStorage(keysStorageAddr).owner());
         require(msg.sender == BallotsManager(ballotsManagerAddr).owner());
@@ -67,11 +72,6 @@ contract ValidatorsStorage is Owned, Utility {
         require(address(ballotsManager) == 0x0);
         require(msg.sender == BallotsManager(addr).owner());
         ballotsManager = BallotsManager(addr);
-    }
-
-    function ValidatorsStorage() public {
-        validators.push(owner);
-        InitiateChange(Utility.getLastBlockHash(), validators);
     }
 
     /**

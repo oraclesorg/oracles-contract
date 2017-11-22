@@ -11,10 +11,10 @@ let util = require('util');
 let {deployTestContracts} = require('./util/deploy.js');
 
 contract('ballotsManager [all features]', function(accounts) {
-    let {systemOwner, trueOwner, keysManager, validatorsStorage, ballotsManager} = {};
+    let {systemOwner, keysManager, validatorsStorage, ballotsManager} = {};
 
     beforeEach(async () => {
-        ({systemOwner, trueOwner, keysManager, validatorsStorage, ballotsManager}  = await deployTestContracts());
+        ({systemOwner, keysManager, validatorsStorage, ballotsManager}  = await deployTestContracts());
     });
 
 });

@@ -11,7 +11,6 @@ let BallotsManagerProxy = artifacts.require('BallotsManagerProxy');
 async function deployTestContracts(accounts) {
     let utilityContract = await Utility.new();
     let systemOwner = data.SYSTEM_OWNER_ADDRESS;
-    let trueOwner = data.TRUE_OWNER_ADDRESS;
     let validatorsStorage = await ValidatorsStorageProxy.new();
     let validatorsManager = await ValidatorsManagerProxy.new();
     let keysStorage = await KeysStorageProxy.new();
@@ -27,7 +26,6 @@ async function deployTestContracts(accounts) {
     
     return {
         systemOwner,
-        trueOwner,
         utilityContract,
         keysStorage,
         keysManager,
