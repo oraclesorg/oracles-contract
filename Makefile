@@ -1,4 +1,4 @@
-.PHONY: merge testrpc test
+.PHONY: merge testrpc test solhint travis_test
 
 merge:
 	node_modules/.bin/sol-merger "src/*.sol" build
@@ -18,3 +18,7 @@ test:
 
 solhint:
 	solhint contracts/*.sol contracts/util/*.sol
+
+travis_test:
+	nohup make testrpc &
+	make test

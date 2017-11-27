@@ -1,0 +1,15 @@
+dist: trusty
+
+language: "node_js"
+
+node_js:
+  - "8"
+
+before_install:
+  - npm i -g npm@5
+
+install:
+  - npm install
+
+script:
+  - make travis_test
