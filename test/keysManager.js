@@ -4,7 +4,6 @@ require('chai')
   .should();
 let data = require('./data.js');
 let big = require('./util/bigNum.js').big;
-let sprintf = require('sprintf');
 let {addressFromNumber} = require('./util/ether.js');
 
 let {deployTestContracts} = require('./util/deploy.js');

@@ -13,7 +13,6 @@
     "ethereumjs-testrpc": "latest",
     "hex": "^0.1.0",
     "sol-merger": "latest",
-    "sprintf": "^0.1.5",
     "truffle": "latest",
     "zeppelin-solidity": "latest"
   },
