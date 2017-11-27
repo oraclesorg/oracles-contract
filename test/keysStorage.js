@@ -9,7 +9,7 @@ let {addressFromNumber} = require('./util/ether.js');
 
 let {deployTestContracts} = require('./util/deploy.js');
 
-contract('keysStorage [all features]', function(accounts) {
+contract('keysStorage', function(accounts) {
     let {systemOwner, keysStorage, validatorsStorage} = {};
 
     beforeEach(async () => {
