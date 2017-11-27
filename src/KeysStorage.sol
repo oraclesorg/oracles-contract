@@ -121,8 +121,6 @@ contract KeysStorage is Owned {
     @return { "value" : "Is initial key new or not new" }
     */
     function checkInitialKey(address key) public view returns (bool value) {
-        // Next line is disabled because it does not make sense
-        //assert(msg.sender == key);
         return initialKeys[key].isNew;
     }
 

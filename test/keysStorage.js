@@ -5,14 +5,21 @@ require('chai')
 let data = require('./data.js');
 let big = require('./util/bigNum.js').big;
 let {addressFromNumber} = require('./util/ether.js');
+let KeysStorage = artifacts.require('KeysStorage');
 
 let {deployTestContracts} = require('./util/deploy.js');
 
 contract('keysStorage', function(accounts) {
-    let {systemOwner, keysStorage, validatorsStorage} = {};
+    let {systemOwner, keysStorage, validatorsStorage, ballotsManager} = {};
 
     beforeEach(async () => {
-        ({systemOwner, keysStorage, validatorsStorage}  = await deployTestContracts());
+        ({
+            systemOwner,
+            keysStorage,
+            validatorsStorage,
+            ballotsManager
+            } = await deployTestContracts()
+        );
     });
 
     it('method addInitialKey is avail for admin', async () => {
@@ -136,6 +143,12 @@ contract('keysStorage', function(accounts) {
         miningKey.should.be.equal(
             await validatorsStorage.validators(1)
         );
+        miningKey.should.be.equal(
+            await keysStorage.votingMiningKeysPair(votingKey)
+        );
+        [votingKey, payoutKey].should.be.deep.equal(
+            await keysStorage.miningToSecondaryKeys(miningKey)
+        );
     });
 
     /*it('createKeys generates event', async() => {
@@ -203,6 +216,21 @@ contract('keysStorage', function(accounts) {
         false.should.be.equal(
             await keysStorage.checkVotingKeyValidity(miningKey)
         );
+    });
+
+    it('increaseLicenses', async () => {
+        big(0).should.be.bignumber.equal(
+            await keysStorage.licensesIssued()
+        );
+        await ballotsManager.callKeysStorageIncreaseLicenses();
+        big(1).should.be.bignumber.equal(
+            await keysStorage.licensesIssued()
+        );
+    });
+
+    it('increaseLicenses fails from non-ballots-manager address', async () => {
+        await keysStorage.increaseLicenses()
+            .should.be.rejectedWith(': revert');
     });
 
 });
