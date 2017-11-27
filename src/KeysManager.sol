@@ -9,7 +9,9 @@ contract KeysManager is Owned {
     int8 public initialKeysLimit = 12;
     int8 public licensesLimit = 52;
 
-    function getLicensesLimitFromGovernance() public view returns(uint licensesLimitFromGovernance) {
+    function getLicensesLimitFromGovernance() public view
+        returns(uint licensesLimitFromGovernance)
+    {
         return SafeMath.sub(uint(licensesLimit), uint(initialKeysLimit));
     }
 }

@@ -10,10 +10,10 @@ let {addressFromNumber} = require('./util/ether.js');
 let {deployTestContracts} = require('./util/deploy.js');
 
 contract('keysStorage [all features]', function(accounts) {
-    let {systemOwner, keysStorage, keysManager, validatorsStorage} = {};
+    let {systemOwner, keysStorage, validatorsStorage} = {};
 
     beforeEach(async () => {
-        ({systemOwner, keysStorage, keysManager, validatorsStorage}  = await deployTestContracts());
+        ({systemOwner, keysStorage, validatorsStorage}  = await deployTestContracts());
     });
 
     it('method addInitialKey is avail for admin', async () => {
@@ -40,8 +40,7 @@ contract('keysStorage [all features]', function(accounts) {
 
     it('addInitialKey is allowed to add only limited number of keys', async () => {
         let idx = 0;
-        let initialKeysLimit = await keysManager.initialKeysLimit.call();
-        while(idx < initialKeysLimit) {
+        while(idx < data.INITIAL_KEYS_LIMIT) {
             let addr = addressFromNumber(idx);//sprintf('0x%040x' % idx);
             await keysStorage.addInitialKey(addr, {from: systemOwner});
             idx++;
