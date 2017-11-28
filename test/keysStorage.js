@@ -222,13 +222,11 @@ contract('keysStorage', function(accounts) {
         big(0).should.be.bignumber.equal(
             await keysStorage.licensesIssued()
         );
-        await ballotsManager.callKeysStorageIncreaseLicenses();
+        await ballotsManager.callIncreaseLicenses();
         big(1).should.be.bignumber.equal(
             await keysStorage.licensesIssued()
         );
-    });
-
-    it('increaseLicenses fails from non-ballots-manager address', async () => {
+        // call from non-ballots-manager
         await keysStorage.increaseLicenses()
             .should.be.rejectedWith(': revert');
     });
@@ -245,7 +243,7 @@ contract('keysStorage', function(accounts) {
         big(0).should.be.bignumber.equal(
             await keysStorage.getLicensesIssuedFromGovernance.call()
         );
-        await ballotsManager.callKeysStorageIncreaseLicenses();
+        await ballotsManager.callIncreaseLicenses();
         big(1).should.be.bignumber.equal(
             await keysStorage.getLicensesIssuedFromGovernance.call()
         );
@@ -269,6 +267,9 @@ contract('keysStorage', function(accounts) {
         miningKey.should.be.equal(
             await keysStorage.votingMiningKeysPair.call(votingKey)
         );
+        // call from non-ballots-manager
+        await keysStorage.setVotingMiningKeysPair(votingKey, miningKey)
+            .should.be.rejectedWith(': revert');
     });
 
     it('getVotingByMining', async () => {
@@ -304,6 +305,9 @@ contract('keysStorage', function(accounts) {
         [newVotingKey, payoutKey].should.be.deep.equal(
             await keysStorage.miningToSecondaryKeys(miningKey)
         );
+        // call from non-ballots-manager
+        await keysStorage.setMiningVotingKeysPair(miningKey, newVotingKey)
+            .should.be.rejectedWith(': revert');
 
     });
 
@@ -318,6 +322,9 @@ contract('keysStorage', function(accounts) {
         [votingKey, newPayoutKey].should.be.deep.equal(
             await keysStorage.miningToSecondaryKeys(miningKey)
         );
+        // call from non-ballots-manager
+        await keysStorage.setMiningPayoutKeysPair(miningKey, newPayoutKey)
+            .should.be.rejectedWith(': revert');
 
     });
 
@@ -327,6 +334,9 @@ contract('keysStorage', function(accounts) {
         true.should.be.equal(
             await keysStorage.votingKeys(votingKey)
         );
+        // call from non-ballots-manager
+        await keysStorage.setVotingKey(votingKey, true)
+            .should.be.rejectedWith(': revert');
     });
 
     it('setPayoutKey', async () => {
@@ -335,6 +345,9 @@ contract('keysStorage', function(accounts) {
         true.should.be.equal(
             await keysStorage.payoutKeys(payoutKey)
         );
+        // call from non-ballots-manager
+        await keysStorage.setPayoutKey(payoutKey, true)
+            .should.be.rejectedWith(': revert');
     });
 
 });
