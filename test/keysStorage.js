@@ -233,4 +233,108 @@ contract('keysStorage', function(accounts) {
             .should.be.rejectedWith(': revert');
     });
 
+    it('getLicensesIssuedFromGovernance', async () => {
+        big(0).should.be.bignumber.equal(
+            await keysStorage.getLicensesIssuedFromGovernance.call()
+        );
+        let miningKey = addressFromNumber(1);
+        let payoutKey = addressFromNumber(2);
+        let votingKey = addressFromNumber(3);
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
+        res = await keysStorage.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
+        big(0).should.be.bignumber.equal(
+            await keysStorage.getLicensesIssuedFromGovernance.call()
+        );
+        await ballotsManager.callKeysStorageIncreaseLicenses();
+        big(1).should.be.bignumber.equal(
+            await keysStorage.getLicensesIssuedFromGovernance.call()
+        );
+    });
+
+    it('getMiningByVoting', async () => {
+        let miningKey = addressFromNumber(1);
+        let payoutKey = addressFromNumber(2);
+        let votingKey = addressFromNumber(3);
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
+        res = await keysStorage.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
+        miningKey.should.be.equal(
+            await keysStorage.getMiningByVoting(votingKey)
+        );
+    });
+
+    it('setVotingMiningKeysPair', async () => {
+        let miningKey = addressFromNumber(1);
+        let votingKey = addressFromNumber(2);
+        await ballotsManager.callSetVotingMiningKeysPair(votingKey, miningKey);
+        miningKey.should.be.equal(
+            await keysStorage.votingMiningKeysPair.call(votingKey)
+        );
+    });
+
+    it('getVotingByMining', async () => {
+        let miningKey = addressFromNumber(1);
+        let payoutKey = addressFromNumber(2);
+        let votingKey = addressFromNumber(3);
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
+        res = await keysStorage.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
+        votingKey.should.be.equal(
+            await keysStorage.getVotingByMining(miningKey)
+        );
+    });
+
+    it('getPayoutByMining', async () => {
+        let miningKey = addressFromNumber(1);
+        let payoutKey = addressFromNumber(2);
+        let votingKey = addressFromNumber(3);
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
+        res = await keysStorage.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
+        payoutKey.should.be.equal(
+            await keysStorage.getPayoutByMining(miningKey)
+        );
+    });
+
+    it('setMiningVotingKeysPair', async () => {
+        let miningKey = addressFromNumber(1);
+        let payoutKey = addressFromNumber(2);
+        let votingKey = addressFromNumber(3);
+        let newVotingKey = addressFromNumber(4);
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
+        res = await keysStorage.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
+        await ballotsManager.callSetMiningVotingKeysPair(miningKey, newVotingKey);
+        [newVotingKey, payoutKey].should.be.deep.equal(
+            await keysStorage.miningToSecondaryKeys(miningKey)
+        );
+
+    });
+
+    it('setMiningPayoutKeysPair', async () => {
+        let miningKey = addressFromNumber(1);
+        let payoutKey = addressFromNumber(2);
+        let votingKey = addressFromNumber(3);
+        let newPayoutKey = addressFromNumber(4);
+        await keysStorage.addInitialKey(accounts[1], {from: systemOwner});
+        res = await keysStorage.createKeys(miningKey, payoutKey, votingKey, {from: accounts[1]});
+        await ballotsManager.callSetMiningPayoutKeysPair(miningKey, newPayoutKey);
+        [votingKey, newPayoutKey].should.be.deep.equal(
+            await keysStorage.miningToSecondaryKeys(miningKey)
+        );
+
+    });
+
+    it('setVotingKey', async () => {
+        let votingKey = addressFromNumber(1);
+        await ballotsManager.callSetVotingKey(votingKey, true);
+        true.should.be.equal(
+            await keysStorage.votingKeys(votingKey)
+        );
+    });
+
+    it('setPayoutKey', async () => {
+        let payoutKey = addressFromNumber(1);
+        await ballotsManager.callSetPayoutKey(payoutKey, true);
+        true.should.be.equal(
+            await keysStorage.payoutKeys(payoutKey)
+        );
+    });
+
 });
