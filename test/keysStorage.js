@@ -5,7 +5,7 @@ require('chai')
 let data = require('./data.js');
 let big = require('./util/bigNum.js').big;
 let {addressFromNumber} = require('./util/ether.js');
-let KeysStorage = artifacts.require('KeysStorage');
+let KeysStorageProxy = artifacts.require('KeysStorageProxy');
 
 let {deployTestContracts} = require('./util/deploy.js');
 
@@ -347,6 +347,34 @@ contract('keysStorage', function(accounts) {
         );
         // call from non-ballots-manager
         await keysStorage.setPayoutKey(payoutKey, true)
+            .should.be.rejectedWith(': revert');
+    });
+
+    it('setKeysManager', async () => {
+        let keysStorage = await KeysStorageProxy.new();
+        await keysStorage.callSetKeysManager(accounts[1]);
+        await keysStorage.callSetKeysManager(accounts[1])
+            .should.be.rejectedWith(': revert');
+    });
+
+    it('setBallotsManager', async () => {
+        let keysStorage = await KeysStorageProxy.new();
+        await keysStorage.callSetBallotsManager(accounts[1]);
+        await keysStorage.callSetBallotsManager(accounts[1])
+            .should.be.rejectedWith(': revert');
+    });
+
+    it('setValidatorsStorage', async () => {
+        let keysStorage = await KeysStorageProxy.new();
+        await keysStorage.callSetValidatorsStorage(accounts[1]);
+        await keysStorage.callSetValidatorsStorage(accounts[1])
+            .should.be.rejectedWith(': revert');
+    });
+
+    it('setValidatorsManager', async () => {
+        let keysStorage = await KeysStorageProxy.new();
+        await keysStorage.callSetValidatorsManager(accounts[1]);
+        await keysStorage.callSetValidatorsManager(accounts[1])
             .should.be.rejectedWith(': revert');
     });
 
