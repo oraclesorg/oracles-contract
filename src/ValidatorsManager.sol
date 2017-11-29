@@ -11,7 +11,11 @@ contract ValidatorsManager is Owned {
     KeysStorage public keysStorage;
     KeysManager public keysManager;
 
-    function initialize(address validatorsStorageAddr, address keysStorageAddr, address keysManagerAddr) public onlyOwner {
+    function initialize(
+        address validatorsStorageAddr,
+        address keysStorageAddr,
+        address keysManagerAddr
+    ) public onlyOwner {
         require(address(validatorsStorage) == 0x0);
         require(address(keysStorage) == 0x0);
         require(address(keysManager) == 0x0);
@@ -24,6 +28,12 @@ contract ValidatorsManager is Owned {
         setKeysManager(keysManagerAddr);
     }
 
+    function setValidatorsStorage(address addr) public onlyOwner {
+        require(address(validatorsStorage) == 0x0);
+        require(msg.sender == ValidatorsStorage(addr).owner());
+        validatorsStorage = ValidatorsStorage(addr);
+    }
+
     function setKeysStorage(address addr) public onlyOwner {
         require(address(keysStorage) == 0x0);
         require(msg.sender == KeysStorage(addr).owner());
@@ -34,12 +44,6 @@ contract ValidatorsManager is Owned {
         require(address(keysManager) == 0x0);
         require(msg.sender == KeysManager(addr).owner());
         keysManager = KeysManager(addr);
-    }
-
-    function setValidatorsStorage(address addr) public onlyOwner {
-        require(address(validatorsStorage) == 0x0);
-        require(msg.sender == ValidatorsStorage(addr).owner());
-        validatorsStorage = ValidatorsStorage(addr);
     }
 
     /**

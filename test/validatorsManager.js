@@ -6,11 +6,19 @@ let data = require('./data.js');
 let big = require('./util/bigNum.js').big;
 let {addressFromNumber} = require('./util/ether.js');
 let util = require('util');
+let ValidatorsManagerProxy = artifacts.require('ValidatorsManagerProxy');
 
 let {deployTestContracts} = require('./util/deploy.js');
 
 contract('ValidatorsManager', function(accounts) {
-    let {systemOwner, keysStorage, validatorsStorage, validatorsManager} = {};
+    let {
+        systemOwner,
+        keysStorage,
+        keysManager,
+        validatorsStorage,
+        validatorsManager
+    } = {};
+
     let keys1 = {
         mining: accounts[1],
         payout: accounts[2],
@@ -39,7 +47,14 @@ contract('ValidatorsManager', function(accounts) {
     };
 
     beforeEach(async () => {
-        ({systemOwner, keysStorage, validatorsStorage, validatorsManager}  = await deployTestContracts());
+        ({
+            systemOwner,
+            keysStorage,
+            keysManager,
+            validatorsStorage,
+            validatorsManager
+            }  = await deployTestContracts()
+        );
     });
 
     it('upsertValidatorFromGovernance [update own data with voting key]', async () => {
@@ -152,6 +167,36 @@ contract('ValidatorsManager', function(accounts) {
             await validatorsStorage.validator(keys2.mining)
         );
 
+    });
+
+    it('setValidatorsStorage', async () => {
+        let validatorsManager = await ValidatorsManagerProxy.new();
+        await validatorsManager.setValidatorsStorage(
+            validatorsStorage.address, {from: systemOwner}
+        );
+        await validatorsManager.setValidatorsStorage(
+                validatorsStorage.address, {from: systemOwner}
+            ).should.be.rejectedWith(': revert');
+    });
+
+    it('setKeysStorage', async () => {
+        let validatorsManager = await ValidatorsManagerProxy.new();
+        await validatorsManager.setKeysStorage(
+            keysStorage.address, {from: systemOwner}
+        );
+        await validatorsManager.setKeysStorage(
+                keysStorage.address, {from: systemOwner}
+            ).should.be.rejectedWith(': revert');
+    });
+
+    it('setKeysManager', async () => {
+        let validatorsManager = await ValidatorsManagerProxy.new();
+        await validatorsManager.setKeysManager(
+            keysManager.address, {from: systemOwner}
+        );
+        await validatorsManager.setKeysManager(
+                keysManager.address, {from: systemOwner}
+            ).should.be.rejectedWith(': revert');
     });
 
 });
