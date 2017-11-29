@@ -47,7 +47,12 @@ contract KeysStorage is Owned {
     ValidatorsStorage public validatorsStorage;
     ValidatorsManager public validatorsManager;
     
-    function initialize(address keysManagerAddr, address ballotsManagerAddr, address validatorsStorageAddr, address validatorsManagerAddr) public onlyOwner {
+    function initialize(
+        address keysManagerAddr,
+        address ballotsManagerAddr,
+        address validatorsStorageAddr,
+        address validatorsManagerAddr
+    ) public onlyOwner {
         require(msg.sender == KeysManager(keysManagerAddr).owner());
         require(msg.sender == BallotsManager(ballotsManagerAddr).owner());
         require(msg.sender == ValidatorsStorage(validatorsStorageAddr).owner());

@@ -10,13 +10,22 @@ let KeysStorageProxy = artifacts.require('KeysStorageProxy');
 let {deployTestContracts} = require('./util/deploy.js');
 
 contract('keysStorage', function(accounts) {
-    let {systemOwner, keysStorage, validatorsStorage, ballotsManager} = {};
+    let {
+        systemOwner,
+        keysStorage,
+        keysManager,
+        validatorsStorage,
+        validatorsManager,
+        ballotsManager
+    } = {};
 
     beforeEach(async () => {
         ({
             systemOwner,
             keysStorage,
+            keysManager,
             validatorsStorage,
+            validatorsManager,
             ballotsManager
             } = await deployTestContracts()
         );
@@ -376,6 +385,62 @@ contract('keysStorage', function(accounts) {
         await keysStorage.callSetValidatorsManager(accounts[1]);
         await keysStorage.callSetValidatorsManager(accounts[1])
             .should.be.rejectedWith(': revert');
+    });
+
+    it.only('initialize', async () => {
+        let keysStorage = await KeysStorageProxy.new();
+        await keysStorage.initialize(
+            keysManager.address,
+            ballotsManager.address,
+            validatorsStorage.address,
+            validatorsManager.address,
+            {from: systemOwner}
+        );
+        keysManager.address.should.be.equal(
+            await keysStorage.keysManager()
+        );
+    });
+
+    it.only('initialize fails if invalid contracts passed', async () => {
+        let keysStorage = await KeysStorageProxy.new();
+        await keysStorage.initialize(
+                accounts[0],
+                ballotsManager.address,
+                validatorsStorage.address,
+                validatorsManager.address,
+                {from: systemOwner}
+            ).should.be.rejectedWith(': revert');
+        await keysStorage.initialize(
+                keysManager.address,
+                accounts[0],
+                validatorsStorage.address,
+                validatorsManager.address,
+                {from: systemOwner}
+            ).should.be.rejectedWith(': revert');
+        await keysStorage.initialize(
+                keysManager.address,
+                ballotsManager.address,
+                accounts[0],
+                validatorsManager.address,
+                {from: systemOwner}
+            ).should.be.rejectedWith(': revert');
+        await keysStorage.initialize(
+                keysManager.address,
+                ballotsManager.address,
+                validatorsStorage.address,
+                accounts[0],
+                {from: systemOwner}
+            ).should.be.rejectedWith(': revert');
+    });
+
+    it.only('initialize fails if called not by system owner', async () => {
+        let keysStorage = await KeysStorageProxy.new();
+        await keysStorage.initialize(
+                keysManager.address,
+                ballotsManager.address,
+                validatorsStorage.address,
+                validatorsManager.address,
+            ).should.be.rejectedWith(': revert');
     });
 
 });
