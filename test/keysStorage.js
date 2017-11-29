@@ -387,7 +387,7 @@ contract('keysStorage', function(accounts) {
             .should.be.rejectedWith(': revert');
     });
 
-    it.only('initialize', async () => {
+    it('initialize', async () => {
         let keysStorage = await KeysStorageProxy.new();
         await keysStorage.initialize(
             keysManager.address,
@@ -401,7 +401,7 @@ contract('keysStorage', function(accounts) {
         );
     });
 
-    it.only('initialize fails if invalid contracts passed', async () => {
+    it('initialize fails if invalid contracts passed', async () => {
         let keysStorage = await KeysStorageProxy.new();
         await keysStorage.initialize(
                 accounts[0],
@@ -433,7 +433,7 @@ contract('keysStorage', function(accounts) {
             ).should.be.rejectedWith(': revert');
     });
 
-    it.only('initialize fails if called not by system owner', async () => {
+    it('initialize fails if called not by system owner', async () => {
         let keysStorage = await KeysStorageProxy.new();
         await keysStorage.initialize(
                 keysManager.address,
